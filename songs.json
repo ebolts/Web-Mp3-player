@@ -1,0 +1,10 @@
+{
+    "songs":[{
+        "title": "hardstyle",
+        "music": "hardstyleSong.mp3"
+    },
+    {
+        "title": "rock",
+        "music": "rock.mp3"
+    }]
+}
