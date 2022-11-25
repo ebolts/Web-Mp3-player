@@ -5,14 +5,21 @@ const musicPlayer = document.querySelector(".musicPlayer");
 const songTitle = document.querySelector(".songTitle");
 const audioSong = document.querySelector("audio");
 const songImage = document.querySelector(".songImage");
-
-let songsIndex = 0;
+const loadingSong = document.querySelector(".loading");
+let songList = document.querySelector(".songList");
+const songItem = document.querySelector(".songItem");
+let test = document.querySelector(".test");
 
 let songs;
+let arr;
 
 function isAudioPLaying() {
   return musicPlayer.classList.contains("playing");
 }
+function displayList() {
+  retrieveSongs();
+}
+
 async function retrieveSongs() {
   await fetch(
     "https://api.napster.com/v2.2/tracks/top?range=year&apikey=ZmMyMDNkYTktZTFhNi00NzIwLTlhZWEtMWIzZGZjZTVjNTlm"
@@ -25,13 +32,14 @@ async function retrieveSongs() {
     })
     .then((data) => {
       songs = data.tracks;
-      loadSong(songs[songsIndex]);
+      console.log(songs);
+
+      loadtest(songs);
     })
     .catch((error) =>
       console.error("There was an issue with fetch request", error)
     );
 }
-retrieveSongs();
 
 function playAudio() {
   musicPlayer.classList.add("playing");
@@ -45,23 +53,44 @@ function pauseAudio() {
   playButton.querySelector("i").classList.add("ph-play");
   audioSong.pause();
 }
-function loadSong(song) {
-  songTitle.innerText = song.name;
-  audioSong.src = song.previewURL;
-  let albumArt = song.albumId;
-  console.log(albumArt);
-  songImage.src = `https://api.napster.com/imageserver/v2/albums/${albumArt}/images/170x170.jpg`;
+
+const myContent = document.querySelector("#myContent");
+
+function loadtest(songs) {
+  const showInHtml = songs.map((song) => {
+    let albumArt = song.albumId;
+    let simg = `https://api.napster.com/imageserver/v2/albums/${albumArt}/images/200x200.jpg`;
+
+    return `
+        <img class="iamge" src=${simg}>
+        <h5 class="card-title">${song.name}</h5>
+        `;
+  });
+  myContent.innerHTML = showInHtml;
 }
+
 function perviousSong() {
-  songsIndex--;
-  songsIndex >= 0 ? loadSong(songs[songsIndex]) : songsIndex++;
+  //songsIndex--;
+  //songsIndex >= 0 ? loadSong(songs[songsIndex]) : songsIndex++;
   isAudioPLaying() ? playAudio() : pauseAudio();
 }
 function nextSong() {
-  songsIndex++;
-  songsIndex <= songs.length - 1 ? loadSong(songs[songsIndex]) : songsIndex--;
+  //songsIndex++;
+  //songsIndex <= songs.length - 1 ? loadSong(songs[songsIndex]) : songsIndex--;
   isAudioPLaying() ? playAudio() : pauseAudio();
 }
+
+function handleFormSubmit(event) {
+  event.preventDefault();
+  const data = new FormData(event.target);
+  const formJSON = Object.fromEntries(data.entries());
+
+  const results = document.querySelector(".results pre");
+
+  results.innerText = JSON.stringify(formJSON, null, 2);
+}
+const form = document.querySelector(".fileForm");
+form.addEventListener("submit", handleFormSubmit);
 
 // EVENT LISTENERS
 playButton.addEventListener("click", () => {
@@ -69,3 +98,4 @@ playButton.addEventListener("click", () => {
 });
 backButton.addEventListener("click", perviousSong);
 forwardButton.addEventListener("click", nextSong);
+displayList();

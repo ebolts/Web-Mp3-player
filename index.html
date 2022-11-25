@@ -6,14 +6,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="./style.css" />
     <script src="https://unpkg.com/phosphor-icons"></script>
-    <script defer src="./app.js"></script>
+    <script defer type="module" src="./app.js"></script>
+    <script type="module" src="./dataBase.js"></script>
     <title>Music Player</title>
   </head>
 
   <body>
     <div class="musicPlayer">
+      <img src="" alt="img" class="testimg" />
       <audio></audio>
-      <img class="songImage" alt="image" />
+      <form action="/songs.json" method="POST" class="fileForm">
+        <input type="file" />
+        <button type="submit">submit</button>
+      </form>
+      <input type="file" id="fileInput" />
+      <button type="submit" id="submit1">submit1</button>
+
+      <div class="results">
+        <h2>Form Data</h2>
+        <pre></pre>
+      </div>
+
+      <img class="songImage" alt="" />
       <h1 class="songTitle"></h1>
       <button class="back">
         <i class="ph-skip-back"></i>
@@ -23,5 +37,6 @@
       </button>
       <button class="forward"><i class="ph-skip-forward"></i></button>
     </div>
+    <div id="myContent"></div>
   </body>
 </html>

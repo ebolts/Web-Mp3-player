@@ -21,3 +21,9 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# test data
+Bad Habits.mp3
+bad-habits-image.jpg
+curse-image.jpg
+Curse.mp3
