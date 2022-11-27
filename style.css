@@ -1,3 +1,9 @@
 .play{
     background-color: blue;
 }
+.testimg{
+    width: 275px;
+    height: 275px;
+    background-position: center;
+    background-size: cover;
+  }

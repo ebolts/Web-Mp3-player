@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="./style.css" />
     <script src="https://unpkg.com/phosphor-icons"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsmediatags/3.9.5/jsmediatags.min.js"></script>
     <script defer type="module" src="./app.js"></script>
     <script type="module" src="./dataBase.js"></script>
     <title>Music Player</title>
@@ -13,13 +14,11 @@
 
   <body>
     <div class="musicPlayer">
-      <img src="" alt="img" class="testimg" />
+      <img src="" alt="" class="testimg" />
       <audio></audio>
-      <form action="/songs.json" method="POST" class="fileForm">
-        <input type="file" />
-        <button type="submit">submit</button>
-      </form>
-      <input type="file" id="fileInput" />
+      <form action="/songs.json" method="POST" class="fileForm"></form>
+      <label for="">only takes mp3</label><br />
+      <input type="file" id="fileInput" accept=".mp3" />
       <button type="submit" id="submit1">submit1</button>
 
       <div class="results">

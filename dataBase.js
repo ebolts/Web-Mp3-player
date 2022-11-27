@@ -1,8 +1,32 @@
 let imageDataURl;
+const jsmediatags = window.jsmediatags;
 const submit1 = document.querySelector("#submit1");
 
 document.querySelector("#fileInput").addEventListener("change", function () {
   const reader = new FileReader();
+  const file = this.files[0];
+  jsmediatags.read(file, {
+    onSuccess: function (tag) {
+      // Array buffer to base64
+      console.log(tag);
+      const data = tag.tags.picture.data;
+      const format = tag.tags.picture.format;
+      let base64String = "";
+      for (let i = 0; i < data.length; i++) {
+        base64String += String.fromCharCode(data[i]);
+      }
+      // Output media tags
+      document.querySelector(
+        ".testimg"
+      ).style.backgroundImage = `url(data:${format};base64,${window.btoa(
+        base64String
+      )})`;
+    },
+    onError: function (error) {
+      console.log(error);
+    },
+  });
+
   reader.addEventListener("load", () => {
     imageDataURl = reader.result;
     console.log(imageDataURl);
@@ -115,9 +139,6 @@ submit1.addEventListener("click", () => {
       mp3data: "badhabitsmp3DataURL",
       image: imageDataURl,
     });
-    tx.oncomplete = function () {
-      db.close();
-    };
 
     const SQuery = songIndex.get(["added-file"]);
     const audioSong = document.querySelector("audio");
@@ -125,6 +146,9 @@ submit1.addEventListener("click", () => {
     SQuery.onsuccess = function () {
       console.log("nameQuery", SQuery.result.image);
       audioSong.src = `${SQuery.result.image}`;
+    };
+    tx.oncomplete = function () {
+      db.close();
     };
   };
 });
