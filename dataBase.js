@@ -1,14 +1,16 @@
-let imageDataURl;
+let songMp3;
+let songDisplay;
+let songName;
 const jsmediatags = window.jsmediatags;
 const submit1 = document.querySelector("#submit1");
 
 document.querySelector("#fileInput").addEventListener("change", function () {
-  const reader = new FileReader();
   const file = this.files[0];
+  console.log(file);
+  // read mp3 file metadata to collect image and name
   jsmediatags.read(file, {
     onSuccess: function (tag) {
       // Array buffer to base64
-      console.log(tag);
       const data = tag.tags.picture.data;
       const format = tag.tags.picture.format;
       let base64String = "";
@@ -16,25 +18,17 @@ document.querySelector("#fileInput").addEventListener("change", function () {
         base64String += String.fromCharCode(data[i]);
       }
       // Output media tags
-      document.querySelector(
-        ".testimg"
-      ).style.backgroundImage = `url(data:${format};base64,${window.btoa(
-        base64String
-      )})`;
+      songDisplay = `url(data:${format};base64,${window.btoa(base64String)})`;
+      document.querySelector(".testimg").style.backgroundImage = songDisplay;
     },
     onError: function (error) {
       console.log(error);
     },
   });
 
-  reader.addEventListener("load", () => {
-    imageDataURl = reader.result;
-    console.log(imageDataURl);
-  });
-  reader.readAsDataURL(this.files[0]);
+  songMp3 = file.name;
+  songName = file.name.substring(-1, songMp3.length - 4);
 });
-
-// 1
 const indexedDB =
   window.indexedDB ||
   window.mozIndexedDB ||
@@ -45,8 +39,6 @@ const indexedDB =
 if (!indexedDB) {
   console.log("IndexedDB could not be found in this browser.");
 }
-
-// 2
 const request = indexedDB.open("SongsDatabase", 1);
 
 request.onerror = function (event) {
@@ -55,53 +47,32 @@ request.onerror = function (event) {
 };
 
 request.onupgradeneeded = function () {
-  //1
   const db = request.result;
-
-  //2
   const store = db.createObjectStore("songs", { keyPath: "id" });
 
-  //3
   store.createIndex("song_name", ["name"], { unique: false });
 };
 
 request.onsuccess = function () {
   console.log("Database opened successfully");
-
   const db = request.result;
-
-  // 1
   const transaction = db.transaction("songs", "readwrite");
-
-  //2
   const store = transaction.objectStore("songs");
   const songIndex = store.index("song_name");
 
-  //3
   store.put({
     id: 1,
-    name: "curse",
-    mp3data: "curemp3dataURL",
-    image: "cureimagedataURL",
+    name: "Curse",
+    mp3data: "curemp3DataURL",
+    image: "cureimageDataURL",
   });
   store.put({
     id: 2,
-    name: "bad habits",
+    name: "Bad Habits",
     mp3data: "badhabitsmp3DataURL",
     image: "badhabitsimageDataURL",
   });
 
-  //4
-
-  const nameQuery = songIndex.get(["curse"]);
-
-  // 5
-
-  nameQuery.onsuccess = function () {
-    console.log("nameQuery", nameQuery.result);
-  };
-
-  // 6
   transaction.oncomplete = function () {
     db.close();
   };
@@ -119,10 +90,7 @@ submit1.addEventListener("click", () => {
 
   open.onupgradeneeded = function () {
     let db = open.result;
-
     const store = db.createObjectStore("songs", { keyPath: "id" });
-
-    //3
     store.createIndex("song_name", ["name"], { unique: false });
   };
 
@@ -130,22 +98,20 @@ submit1.addEventListener("click", () => {
     let db = open.result;
     let tx = db.transaction("songs", "readwrite");
     let store = tx.objectStore("songs");
-
-    const songIndex = store.index("song_name");
-
     store.put({
       id: 3,
-      name: "added-file",
-      mp3data: "badhabitsmp3DataURL",
-      image: imageDataURl,
+      name: songName,
+      mp3data: songMp3,
+      image: songDisplay,
     });
 
-    const SQuery = songIndex.get(["added-file"]);
+    const songIndex = store.index("song_name");
+    const SQuery = songIndex.get([songName]);
     const audioSong = document.querySelector("audio");
     const img = document.querySelector(".testimg");
     SQuery.onsuccess = function () {
-      console.log("nameQuery", SQuery.result.image);
-      audioSong.src = `${SQuery.result.image}`;
+      console.log("nameQuery", SQuery.result.mp3data);
+      audioSong.src = `${SQuery.result.mp3data}`;
     };
     tx.oncomplete = function () {
       db.close();
