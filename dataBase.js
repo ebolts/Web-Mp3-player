@@ -1,11 +1,12 @@
 let songMp3;
 let songDisplay;
 let songName;
-let indexCount = 0;
+let indexCount = 1;
 const jsmediatags = window.jsmediatags;
 const submit1 = document.querySelector("#submit1");
 const backButton = document.querySelector(".back");
 const forwardButton = document.querySelector(".forward");
+const img = document.querySelector(".testimg");
 
 document.querySelector("#fileInput").addEventListener("change", function () {
   const file = this.files[0];
@@ -22,6 +23,7 @@ document.querySelector("#fileInput").addEventListener("change", function () {
       }
       // Output media tags
       songDisplay = `url(data:${format};base64,${window.btoa(base64String)})`;
+      console.log(songDisplay);
       document.querySelector(".testimg").style.backgroundImage = songDisplay;
     },
     onError: function (error) {
@@ -101,20 +103,25 @@ submit1.addEventListener("click", () => {
     let db = open.result;
     let tx = db.transaction("songs", "readwrite");
     let store = tx.objectStore("songs");
-    store.put({
-      id: 3,
-      name: songName,
-      mp3data: songMp3,
-      image: songDisplay,
-    });
+    let countIndex = store.count();
+    countIndex.onsuccess = function () {
+      console.log(countIndex.result + 1);
+      store.put({
+        id: countIndex.result + 1,
+        name: songName,
+        mp3data: songMp3,
+        image: songDisplay,
+      });
 
-    const songIndex = store.index("song_name");
-    const SQuery = songIndex.get([songName]);
-    const audioSong = document.querySelector("audio");
-    const img = document.querySelector(".testimg");
-    SQuery.onsuccess = function () {
-      console.log("nameQuery", SQuery.result.mp3data);
-      audioSong.src = `${SQuery.result.mp3data}`;
+      const songIndex = store.index("song_name");
+      const SQuery = songIndex.get([songName]);
+      const audioSong = document.querySelector("audio");
+
+      SQuery.onsuccess = function () {
+        console.log("nameQuery:", SQuery.result.mp3data);
+
+        audioSong.src = `${SQuery.result.mp3data}`;
+      };
     };
     tx.oncomplete = function () {
       db.close();
@@ -150,8 +157,10 @@ backButton.addEventListener("click", () => {
 
     IDQuery.onsuccess = function () {
       console.log("nameQuery", IDQuery.result.mp3data);
+      console.log("imageQuery:", IDQuery.result.image);
 
       audioSong.src = `${IDQuery.result.mp3data}`;
+      img.style.backgroundImage = `${IDQuery.result.image}`;
     };
 
     tx.oncomplete = function () {
@@ -188,8 +197,10 @@ forwardButton.addEventListener("click", () => {
 
     IDQuery.onsuccess = function () {
       console.log("nameQuery", IDQuery.result.mp3data);
+      console.log("imageQuery:", IDQuery.result.image);
 
       audioSong.src = `${IDQuery.result.mp3data}`;
+      img.style.backgroundImage = `${IDQuery.result.image}`;
     };
 
     tx.oncomplete = function () {
