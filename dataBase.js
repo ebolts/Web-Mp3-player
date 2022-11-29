@@ -146,14 +146,18 @@ backButton.addEventListener("click", () => {
   };
 
   open.onsuccess = function () {
-    indexCount--;
-    console.log(indexCount);
     let db = open.result;
     let tx = db.transaction("songs", "readwrite");
     let store = tx.objectStore("songs");
     const songIndex = store.index("song_name");
     const IDQuery = store.get(indexCount);
     const audioSong = document.querySelector("audio");
+
+    let countIndex = store.count();
+    countIndex.onsuccess = function () {
+      indexCount == 1 ? null : indexCount--;
+      console.log(indexCount);
+    };
 
     IDQuery.onsuccess = function () {
       console.log("nameQuery", IDQuery.result.mp3data);
@@ -186,14 +190,18 @@ forwardButton.addEventListener("click", () => {
   };
 
   open.onsuccess = function () {
-    indexCount++;
-    console.log(indexCount);
     let db = open.result;
     let tx = db.transaction("songs", "readwrite");
     let store = tx.objectStore("songs");
     const songIndex = store.index("song_name");
     const IDQuery = store.get(indexCount);
     const audioSong = document.querySelector("audio");
+
+    let countIndex = store.count();
+    countIndex.onsuccess = function () {
+      indexCount == countIndex.result ? null : indexCount++;
+      console.log(indexCount);
+    };
 
     IDQuery.onsuccess = function () {
       console.log("nameQuery", IDQuery.result.mp3data);
