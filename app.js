@@ -69,13 +69,9 @@ function loadtest(songs) {
 }
 
 function perviousSong() {
-  //songsIndex--;
-  //songsIndex >= 0 ? loadSong(songs[songsIndex]) : songsIndex++;
   isAudioPLaying() ? playAudio() : pauseAudio();
 }
 function nextSong() {
-  //songsIndex++;
-  //songsIndex <= songs.length - 1 ? loadSong(songs[songsIndex]) : songsIndex--;
   isAudioPLaying() ? playAudio() : pauseAudio();
 }
 

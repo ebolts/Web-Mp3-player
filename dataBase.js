@@ -1,7 +1,7 @@
 let songMp3;
 let songDisplay;
 let songName;
-let indexCount = 1;
+let indexCount = 0;
 const jsmediatags = window.jsmediatags;
 const submit1 = document.querySelector("#submit1");
 const backButton = document.querySelector(".back");
@@ -119,7 +119,6 @@ submit1.addEventListener("click", () => {
 
       SQuery.onsuccess = function () {
         console.log("nameQuery:", SQuery.result.mp3data);
-
         audioSong.src = `${SQuery.result.mp3data}`;
       };
     };
@@ -156,15 +155,16 @@ backButton.addEventListener("click", () => {
     let countIndex = store.count();
     countIndex.onsuccess = function () {
       indexCount == 1 ? null : indexCount--;
-      console.log(indexCount);
-    };
+      console.log("test");
 
-    IDQuery.onsuccess = function () {
-      console.log("nameQuery", IDQuery.result.mp3data);
-      console.log("imageQuery:", IDQuery.result.image);
-
-      audioSong.src = `${IDQuery.result.mp3data}`;
-      img.style.backgroundImage = `${IDQuery.result.image}`;
+      const IDQuery = store.get(indexCount);
+      IDQuery.onsuccess = function () {
+        console.log("nameQuery", IDQuery.result.mp3data);
+        console.log("imageQuery:", IDQuery.result.image);
+        audioSong.src = `${IDQuery.result.mp3data}`;
+        img.style.backgroundImage = `${IDQuery.result.image}`;
+        console.log(indexCount);
+      };
     };
 
     tx.oncomplete = function () {
@@ -194,21 +194,22 @@ forwardButton.addEventListener("click", () => {
     let tx = db.transaction("songs", "readwrite");
     let store = tx.objectStore("songs");
     const songIndex = store.index("song_name");
-    const IDQuery = store.get(indexCount);
+
     const audioSong = document.querySelector("audio");
 
     let countIndex = store.count();
     countIndex.onsuccess = function () {
       indexCount == countIndex.result ? null : indexCount++;
-      console.log(indexCount);
-    };
+      console.log("test");
 
-    IDQuery.onsuccess = function () {
-      console.log("nameQuery", IDQuery.result.mp3data);
-      console.log("imageQuery:", IDQuery.result.image);
-
-      audioSong.src = `${IDQuery.result.mp3data}`;
-      img.style.backgroundImage = `${IDQuery.result.image}`;
+      const IDQuery = store.get(indexCount);
+      IDQuery.onsuccess = function () {
+        console.log("nameQuery", IDQuery.result.mp3data);
+        console.log("imageQuery:", IDQuery.result.image);
+        audioSong.src = `${IDQuery.result.mp3data}`;
+        img.style.backgroundImage = `${IDQuery.result.image}`;
+        console.log(indexCount);
+      };
     };
 
     tx.oncomplete = function () {
