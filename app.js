@@ -1,6 +1,5 @@
 const playButton = document.querySelector(".start");
-const backButton = document.querySelector(".back");
-const forwardButton = document.querySelector(".forward");
+
 const musicPlayer = document.querySelector(".musicPlayer");
 const songTitle = document.querySelector(".songTitle");
 const audioSong = document.querySelector("audio");
@@ -96,6 +95,5 @@ form.addEventListener("submit", handleFormSubmit);
 playButton.addEventListener("click", () => {
   isAudioPLaying() ? pauseAudio() : playAudio(); // is audio play true? then pause else play
 });
-backButton.addEventListener("click", perviousSong);
-forwardButton.addEventListener("click", nextSong);
+
 displayList();

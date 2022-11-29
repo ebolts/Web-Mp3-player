@@ -1,8 +1,11 @@
 let songMp3;
 let songDisplay;
 let songName;
+let indexCount = 0;
 const jsmediatags = window.jsmediatags;
 const submit1 = document.querySelector("#submit1");
+const backButton = document.querySelector(".back");
+const forwardButton = document.querySelector(".forward");
 
 document.querySelector("#fileInput").addEventListener("change", function () {
   const file = this.files[0];
@@ -27,7 +30,8 @@ document.querySelector("#fileInput").addEventListener("change", function () {
   });
 
   songMp3 = file.name;
-  songName = file.name.substring(-1, songMp3.length - 4);
+  songName = songMp3.substring(-1, songMp3.length - 4);
+  console.log("songname:", songName);
 });
 const indexedDB =
   window.indexedDB ||
@@ -58,17 +62,16 @@ request.onsuccess = function () {
   const db = request.result;
   const transaction = db.transaction("songs", "readwrite");
   const store = transaction.objectStore("songs");
-  const songIndex = store.index("song_name");
 
   store.put({
     id: 1,
-    name: "Curse",
+    name: "Cursetest",
     mp3data: "curemp3DataURL",
     image: "cureimageDataURL",
   });
   store.put({
     id: 2,
-    name: "Bad Habits",
+    name: "Bad Habitstests",
     mp3data: "badhabitsmp3DataURL",
     image: "badhabitsimageDataURL",
   });
@@ -113,6 +116,82 @@ submit1.addEventListener("click", () => {
       console.log("nameQuery", SQuery.result.mp3data);
       audioSong.src = `${SQuery.result.mp3data}`;
     };
+    tx.oncomplete = function () {
+      db.close();
+    };
+  };
+});
+
+backButton.addEventListener("click", () => {
+  console.log("open db on event click");
+  let indexedDB =
+    window.indexedDB ||
+    window.mozIndexedDB ||
+    window.webkitIndexedDB ||
+    window.msIndexedDB;
+
+  let open = indexedDB.open("SongsDatabase", 1);
+
+  open.onupgradeneeded = function () {
+    let db = open.result;
+    const store = db.createObjectStore("songs", { keyPath: "id" });
+    store.createIndex("song_name", ["name"], { unique: false });
+  };
+
+  open.onsuccess = function () {
+    indexCount--;
+    console.log(indexCount);
+    let db = open.result;
+    let tx = db.transaction("songs", "readwrite");
+    let store = tx.objectStore("songs");
+    const songIndex = store.index("song_name");
+    const IDQuery = store.get(indexCount);
+    const audioSong = document.querySelector("audio");
+
+    IDQuery.onsuccess = function () {
+      console.log("nameQuery", IDQuery.result.mp3data);
+
+      audioSong.src = `${IDQuery.result.mp3data}`;
+    };
+
+    tx.oncomplete = function () {
+      db.close();
+    };
+  };
+});
+
+forwardButton.addEventListener("click", () => {
+  console.log("open db on event click");
+  let indexedDB =
+    window.indexedDB ||
+    window.mozIndexedDB ||
+    window.webkitIndexedDB ||
+    window.msIndexedDB;
+
+  let open = indexedDB.open("SongsDatabase", 1);
+
+  open.onupgradeneeded = function () {
+    let db = open.result;
+    const store = db.createObjectStore("songs", { keyPath: "id" });
+    store.createIndex("song_name", ["name"], { unique: false });
+  };
+
+  open.onsuccess = function () {
+    indexCount++;
+    console.log(indexCount);
+    let db = open.result;
+    let tx = db.transaction("songs", "readwrite");
+    let store = tx.objectStore("songs");
+    const songIndex = store.index("song_name");
+    const IDQuery = store.get(indexCount);
+    const audioSong = document.querySelector("audio");
+
+    IDQuery.onsuccess = function () {
+      console.log("nameQuery", IDQuery.result.mp3data);
+
+      audioSong.src = `${IDQuery.result.mp3data}`;
+    };
+
     tx.oncomplete = function () {
       db.close();
     };
