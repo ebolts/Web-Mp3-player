@@ -11,6 +11,7 @@
   width: 65px;
   height: 65px;
   margin-right: 10px;
+  margin-left: 30px;
   background-position: center;
   background-size: cover;
 }
@@ -39,7 +40,7 @@ li {
 
 .ph-music-notes-plus,
 .ph-playlist,
-.ph-music-notes,
+.main-menu-list > li > .ph-music-notes,
 .ph-magnifying-glass,
 .ph-upload-simple {
   padding-right: 10px;
@@ -52,7 +53,6 @@ li {
 .media-player {
   position: fixed;
   display: flex;
-  margin-left: 35px;
   left: 0;
   bottom: 0;
   width: 100%;
@@ -64,4 +64,20 @@ li {
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+
+.table-header {
+  display: flex;
+  width: auto;
+  text-align: center;
+}
+.table-header2 {
+  display: flex;
+  text-align: center;
+  justify-content: space-evenly;
+  width: 100%;
+}
+.table-title {
+  margin: 0;
+  width: 20%;
 }
