@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="./style.css" />
     <script src="https://unpkg.com/phosphor-icons"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jsmediatags/3.9.5/jsmediatags.min.js"></script>
     <script defer type="module" src="./app.js"></script>
     <script type="module" src="./dataBase.js"></script>
@@ -13,21 +14,46 @@
   </head>
 
   <body>
-    <div class="musicPlayer">
-      <img src="" alt="" class="testimg" />
+    <div class="grid-container">
+      <!-- <div class="musicPlayer"> -->
       <audio></audio>
-      <form action="/songs.json" method="POST" class="fileForm"></form>
-      <label for="">only takes mp3</label><br />
-      <input type="file" id="fileInput" accept=".mp3" />
-      <button type="submit" id="submit1">submit1</button>
-
-      <div class="results">
-        <h2>Form Data</h2>
-        <pre></pre>
+      <div class="mainMenu">
+        <ul class="main-menu-list">
+          <li><i class="ph-music-notes-plus"></i>Recently Added</li>
+          <li><i class="ph-playlist"></i>Playlist</li>
+          <li><i class="ph-music-notes"></i>Discover</li>
+          <li><i class="ph-magnifying-glass"></i>Search</li>
+          <li><i class="ph-upload-simple"></i>Upload</li>
+        </ul>
       </div>
-
-      <img class="songImage" alt="" />
-      <h1 class="songTitle"></h1>
+      <div class="preview">
+        <div class="song-info">
+          <h1>Title</h1>
+          <h2>Artist</h2>
+        </div>
+        <img src="" alt="" class="testimg" />
+      </div>
+      <div class="subMenu">
+        <ul class="sub-menu-list">
+          <li>option1</li>
+          <li>option2</li>
+          <li>option3</li>
+        </ul>
+        <input type="file" id="fileInput" accept=".mp3" />
+        <button type="submit" id="submit1">submit1</button>
+      </div>
+      <div class="listMenu">
+        <li>song1</li>
+        <li>song2</li>
+        <li>song3</li>
+      </div>
+    </div>
+    <div class="media-player">
+      <img src="" alt="" class="song-box-img" />
+      <div class="song-info-small">
+        <h6 class="song-text-small">Song Title</h6>
+        <h6 class="song-text-small">Song Artist</h6>
+      </div>
       <button class="back">
         <i class="ph-skip-back"></i>
       </button>
@@ -35,7 +61,16 @@
         <i class="ph-play"></i>
       </button>
       <button class="forward"><i class="ph-skip-forward"></i></button>
+      <div class="music-bar"></div>
     </div>
-    <div id="myContent"></div>
+
+    <img class="songImage" alt="" />
+    <h1 class="songTitle"></h1>
+
+    <form action="/songs.json" method="POST" class="fileForm"></form>
+    <!-- <div id="myContent"></div>
+    <div class="results">
+      <pre></pre> -->
+    <!-- </div> -->
   </body>
 </html>

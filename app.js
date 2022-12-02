@@ -5,6 +5,7 @@ const songTitle = document.querySelector(".songTitle");
 const audioSong = document.querySelector("audio");
 const songImage = document.querySelector(".songImage");
 const loadingSong = document.querySelector(".loading");
+const myContent = document.querySelector("#myContent");
 let songList = document.querySelector(".songList");
 const songItem = document.querySelector(".songItem");
 let test = document.querySelector(".test");
@@ -15,30 +16,27 @@ let arr;
 function isAudioPLaying() {
   return musicPlayer.classList.contains("playing");
 }
-function displayList() {
-  retrieveSongs();
-}
 
-async function retrieveSongs() {
-  await fetch(
-    "https://api.napster.com/v2.2/tracks/top?range=year&apikey=ZmMyMDNkYTktZTFhNi00NzIwLTlhZWEtMWIzZGZjZTVjNTlm"
-  )
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Network response failed");
-      }
-      return response.json();
-    })
-    .then((data) => {
-      songs = data.tracks;
-      console.log(songs);
+// async function retrieveSongs() {
+//   await fetch(
+//     "https://api.napster.com/v2.2/tracks/top?range=year&apikey=ZmMyMDNkYTktZTFhNi00NzIwLTlhZWEtMWIzZGZjZTVjNTlm"
+//   )
+//     .then((response) => {
+//       if (!response.ok) {
+//         throw new Error("Network response failed");
+//       }
+//       return response.json();
+//     })
+//     .then((data) => {
+//       songs = data.tracks;
+//       console.log(songs);
 
-      loadtest(songs);
-    })
-    .catch((error) =>
-      console.error("There was an issue with fetch request", error)
-    );
-}
+//       loadtest(songs);
+//     })
+//     .catch((error) =>
+//       console.error("There was an issue with fetch request", error)
+//     );
+// }
 
 function playAudio() {
   musicPlayer.classList.add("playing");
@@ -53,20 +51,18 @@ function pauseAudio() {
   audioSong.pause();
 }
 
-const myContent = document.querySelector("#myContent");
+// function loadtest(songs) {
+//   const showInHtml = songs.map((song) => {
+//     let albumArt = song.albumId;
+//     let simg = `https://api.napster.com/imageserver/v2/albums/${albumArt}/images/200x200.jpg`;
 
-function loadtest(songs) {
-  const showInHtml = songs.map((song) => {
-    let albumArt = song.albumId;
-    let simg = `https://api.napster.com/imageserver/v2/albums/${albumArt}/images/200x200.jpg`;
-
-    return `
-        <img class="iamge" src=${simg}>
-        <h5 class="card-title">${song.name}</h5>
-        `;
-  });
-  myContent.innerHTML = showInHtml;
-}
+//     return `
+//         <img class="iamge" src=${simg}>
+//         <h5 class="card-title">${song.name}</h5>
+//         `;
+//   });
+//   myContent.innerHTML = showInHtml;
+// }
 
 function perviousSong() {
   isAudioPLaying() ? playAudio() : pauseAudio();
@@ -75,21 +71,21 @@ function nextSong() {
   isAudioPLaying() ? playAudio() : pauseAudio();
 }
 
-function handleFormSubmit(event) {
-  event.preventDefault();
-  const data = new FormData(event.target);
-  const formJSON = Object.fromEntries(data.entries());
+// function handleFormSubmit(event) {
+//   event.preventDefault();
+//   const data = new FormData(event.target);
+//   const formJSON = Object.fromEntries(data.entries());
 
-  const results = document.querySelector(".results pre");
+//   const results = document.querySelector(".results pre");
 
-  results.innerText = JSON.stringify(formJSON, null, 2);
-}
-const form = document.querySelector(".fileForm");
-form.addEventListener("submit", handleFormSubmit);
+//   results.innerText = JSON.stringify(formJSON, null, 2);
+// }
+// const form = document.querySelector(".fileForm");
+// form.addEventListener("submit", handleFormSubmit);
 
 // EVENT LISTENERS
 playButton.addEventListener("click", () => {
   isAudioPLaying() ? pauseAudio() : playAudio(); // is audio play true? then pause else play
 });
 
-displayList();
+// retrieveSongs();;

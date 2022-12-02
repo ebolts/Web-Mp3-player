@@ -148,8 +148,6 @@ backButton.addEventListener("click", () => {
     let db = open.result;
     let tx = db.transaction("songs", "readwrite");
     let store = tx.objectStore("songs");
-    const songIndex = store.index("song_name");
-    const IDQuery = store.get(indexCount);
     const audioSong = document.querySelector("audio");
 
     let countIndex = store.count();
@@ -193,8 +191,6 @@ forwardButton.addEventListener("click", () => {
     let db = open.result;
     let tx = db.transaction("songs", "readwrite");
     let store = tx.objectStore("songs");
-    const songIndex = store.index("song_name");
-
     const audioSong = document.querySelector("audio");
 
     let countIndex = store.count();

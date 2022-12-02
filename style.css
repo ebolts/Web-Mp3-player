@@ -1,9 +1,67 @@
-.play{
-    background-color: blue;
+.play {
+  background-color: blue;
 }
-.testimg{
-    width: 275px;
-    height: 275px;
-    background-position: center;
-    background-size: cover;
-  }
+.testimg {
+  width: 100%;
+  height: 100%;
+  background-position: center;
+  background-size: cover;
+}
+.song-box-img {
+  width: 65px;
+  height: 65px;
+  margin-right: 10px;
+  background-position: center;
+  background-size: cover;
+}
+.grid-container {
+  display: grid;
+  grid-template-columns: 0.6fr 1.4fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 0px 0px;
+  grid-auto-flow: row;
+  grid-template-areas:
+    ". ."
+    ". .";
+}
+div {
+  border: 1px;
+  border-color: red;
+  border-style: solid;
+}
+li {
+  list-style-type: none;
+}
+.main-menu-list > li,
+.sub-menu-list > li {
+  margin-top: 30px;
+}
+
+.ph-music-notes-plus,
+.ph-playlist,
+.ph-music-notes,
+.ph-magnifying-glass,
+.ph-upload-simple {
+  padding-right: 10px;
+}
+.song-info {
+  position: absolute;
+  margin-left: 5%;
+  z-index: 10;
+}
+.media-player {
+  position: fixed;
+  display: flex;
+  margin-left: 35px;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+}
+.song-text-small {
+  margin: 5px;
+}
+.song-info-small {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
