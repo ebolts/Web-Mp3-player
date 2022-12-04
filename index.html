@@ -19,11 +19,25 @@
       <audio></audio>
       <div class="mainMenu">
         <ul class="main-menu-list">
-          <li><i class="ph-music-notes-plus"></i>Recently Added</li>
-          <li><i class="ph-playlist"></i>Playlist</li>
-          <li><i class="ph-music-notes"></i>Discover</li>
-          <li><i class="ph-magnifying-glass"></i>Search</li>
-          <li><i class="ph-upload-simple"></i>Upload</li>
+          <li>
+            <button class="recently-played">
+              <i class="ph-music-notes-plus"></i>Recently Added
+            </button>
+          </li>
+          <li>
+            <button class="playlist">
+              <i class="ph-playlist"></i>Playlist
+            </button>
+          </li>
+          <li>
+            <button><i class="ph-music-notes"></i>Discover</button>
+          </li>
+          <li>
+            <button><i class="ph-magnifying-glass"></i>Search</button>
+          </li>
+          <li>
+            <button><i class="ph-upload-simple"></i>Upload</button>
+          </li>
         </ul>
       </div>
       <div class="preview">
@@ -34,13 +48,56 @@
         <img src="" alt="" class="testimg" />
       </div>
       <div class="subMenu">
-        <ul class="sub-menu-list">
-          <li>option1</li>
-          <li>option2</li>
-          <li>option3</li>
+        <ul class="sub-menu-recent-songs">
+          <li>
+            <button>Recently 1</button>
+          </li>
+          <li>
+            <button>Recently 2</button>
+          </li>
+          <li>
+            <button>Recently 3</button>
+          </li>
+          <li>
+            <button>Recently 4</button>
+          </li>
+          <li>
+            <button>Recently 4</button>
+          </li>
+          <li>
+            <button>Recently 4</button>
+          </li>
+          <li>
+            <button>Recently 4</button>
+          </li>
+          <li>
+            <button>Recently 4</button>
+          </li>
+          <li>
+            <button>Recently 4</button>
+          </li>
+          <li>
+            <button>Recently 4</button>
+          </li>
         </ul>
-        <input type="file" id="fileInput" accept=".mp3" />
-        <button type="submit" id="submit1">submit1</button>
+        <ul class="sub-menu-list" style="display: none">
+          <li>
+            <button>Playlist #1</button>
+          </li>
+          <li>
+            <button>Playlist #2</button>
+          </li>
+          <li>
+            <button>Playlist #3</button>
+          </li>
+          <li>
+            <button>Playlist #4</button>
+          </li>
+        </ul>
+        <input type="file" id="fileInput" accept=".mp3" style="display: none" />
+        <button type="submit" id="submit1" style="display: none">
+          submit1
+        </button>
       </div>
       <div class="listMenu">
         <div class="table-header">
@@ -56,7 +113,7 @@
         <li>song3</li>
       </div>
     </div>
-    <div class="media-player">
+    <!-- <div class="media-player">
       <img src="" alt="" class="song-box-img" />
       <div class="song-info-small">
         <h6 class="song-text-small">Song Title</h6>
@@ -70,7 +127,7 @@
       </button>
       <button class="forward"><i class="ph-skip-forward"></i></button>
       <div class="music-bar"></div>
-    </div>
+    </div> -->
 
     <img class="songImage" alt="" />
     <h1 class="songTitle"></h1>

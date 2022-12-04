@@ -1,5 +1,10 @@
-.play {
-  background-color: blue;
+html {
+  margin: 0;
+  min-height: 100%;
+}
+body {
+  margin: 0;
+  min-height: 100%;
 }
 .testimg {
   width: 100%;
@@ -17,14 +22,14 @@
 }
 .grid-container {
   display: grid;
-  grid-template-columns: 0.6fr 1.4fr;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  grid-template-columns: 0.6fr 1.8fr;
   grid-template-rows: 1fr 1fr;
-  gap: 0px 0px;
   grid-auto-flow: row;
-  grid-template-areas:
-    ". ."
-    ". .";
 }
+
 div {
   border: 1px;
   border-color: red;
@@ -34,13 +39,14 @@ li {
   list-style-type: none;
 }
 .main-menu-list > li,
-.sub-menu-list > li {
+.sub-menu-list > li,
+.sub-menu-recent-songs > li {
   margin-top: 30px;
 }
 
 .ph-music-notes-plus,
 .ph-playlist,
-.main-menu-list > li > .ph-music-notes,
+.main-menu-list > li > button > .ph-music-notes,
 .ph-magnifying-glass,
 .ph-upload-simple {
   padding-right: 10px;

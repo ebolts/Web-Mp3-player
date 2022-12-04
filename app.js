@@ -13,6 +13,18 @@ let test = document.querySelector(".test");
 let songs;
 let arr;
 
+const playlist = document.querySelector(".playlist");
+const recentplayed = document.querySelector(".recently-played");
+
+playlist.addEventListener("click", () => {
+  document.querySelector(".sub-menu-list").style.display = "block";
+  document.querySelector(".sub-menu-recent-songs").style.display = "none";
+});
+
+recentplayed.addEventListener("click", () => {
+  document.querySelector(".sub-menu-list").style.display = "none";
+  document.querySelector(".sub-menu-recent-songs").style.display = "block";
+});
 function isAudioPLaying() {
   return musicPlayer.classList.contains("playing");
 }
