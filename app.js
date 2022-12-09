@@ -1,7 +1,7 @@
 import f from "./facon.js";
 
 const playButton = document.querySelector(".start");
-const musicPlayer = document.querySelector(".musicPlayer");
+const musicPlayer = document.querySelector(".media-player");
 const songTitle = document.querySelector(".songTitle");
 const audioSong = document.querySelector("audio");
 const songImage = document.querySelector(".songImage");
@@ -71,7 +71,7 @@ function loadtest(songs) {
     let albumArt = song.albumId;
     let simg = `https://api.napster.com/imageserver/v2/albums/${albumArt}/images/200x200.jpg`;
 
-    let context = f`<div style="display: flex; text-align: left; align-items:center;  "> 
+    let context = f`<div ref="songdiv" style="display: flex; text-align: left; align-items:center;  "> 
 
         <div style="text-align: left; width:300px "> 
           <img class="image" src=${simg} style=" width: 50%; height: auto;">
@@ -95,8 +95,86 @@ function loadtest(songs) {
 
       </div>`;
 
-    let { plusbtn } = context.collect();
-    plusbtn.addEventListener("click", () => console.log(song.name));
+    let { plusbtn, songdiv } = context.collect();
+    plusbtn.addEventListener("click", () => {
+      console.log("open db on event click");
+      let indexedDB =
+        window.indexedDB ||
+        window.mozIndexedDB ||
+        window.webkitIndexedDB ||
+        window.msIndexedDB;
+
+      let open = indexedDB.open("SongsDatabase", 1);
+
+      open.onupgradeneeded = function () {
+        let db = open.result;
+        const store = db.createObjectStore("songs", { keyPath: "id" });
+        store.createIndex("song_name", ["name"], { unique: false });
+      };
+
+      open.onsuccess = function () {
+        let db = open.result;
+        let tx = db.transaction("songs", "readwrite");
+        let store = tx.objectStore("songs");
+        let countIndex = store.count();
+        countIndex.onsuccess = function () {
+          console.log(countIndex.result + 1);
+          store.put({
+            id: countIndex.result + 1,
+            name: song.name,
+            artist: song.artistName,
+            time: song.playbackSeconds,
+            mp3data: song.previewURL,
+            image: simg,
+          });
+        };
+        tx.oncomplete = function () {
+          db.close();
+        };
+      };
+    });
+
+    songdiv.addEventListener("click", () => {
+      console.log("open db on event click");
+      let indexedDB =
+        window.indexedDB ||
+        window.mozIndexedDB ||
+        window.webkitIndexedDB ||
+        window.msIndexedDB;
+
+      let open = indexedDB.open("SongsDatabase", 1);
+
+      open.onupgradeneeded = function () {
+        let db = open.result;
+        const store = db.createObjectStore("songs", { keyPath: "id" });
+        store.createIndex("song_name", ["name"], { unique: false });
+      };
+
+      open.onsuccess = function () {
+        let db = open.result;
+        let tx = db.transaction("songs", "readwrite");
+        let store = tx.objectStore("songs");
+        const audioSong = document.querySelector("audio");
+
+        const songIndex = store.index("song_name");
+        const IDQuery = songIndex.get([song.name]);
+        const img = document.querySelector(".testimg");
+
+        IDQuery.onsuccess = function () {
+          console.log(IDQuery);
+          console.log("nameQuery", IDQuery.result.name);
+          console.log("mp3dataQuery", IDQuery.result.mp3data);
+          console.log("imageQuery:", IDQuery.result.image);
+          audioSong.src = `${IDQuery.result.mp3data}`;
+          img.style.backgroundImage = `${IDQuery.result.image}`;
+        };
+
+        tx.oncomplete = function () {
+          db.close();
+        };
+      };
+    });
+
     songElement = songObject.appendChild(context);
     return songElement;
   });
