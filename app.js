@@ -1,5 +1,6 @@
-const playButton = document.querySelector(".start");
+import f from "./facon.js";
 
+const playButton = document.querySelector(".start");
 const musicPlayer = document.querySelector(".musicPlayer");
 const songTitle = document.querySelector(".songTitle");
 const audioSong = document.querySelector("audio");
@@ -64,35 +65,46 @@ function pauseAudio() {
 }
 
 function loadtest(songs) {
+  let songElement;
   const showInHtml = songs.map((song) => {
+    console.log(song);
     let albumArt = song.albumId;
-
     let simg = `https://api.napster.com/imageserver/v2/albums/${albumArt}/images/200x200.jpg`;
 
-    return `
-    
-        <div style="display: flex; text-align: left; align-items:center;  "> 
+    let context = f`<div style="display: flex; text-align: left; align-items:center;  "> 
 
         <div style="text-align: left; width:300px "> 
-        <img class="image" src=${simg} style=" width: 50%; height: auto;">
+          <img class="image" src=${simg} style=" width: 50%; height: auto;">
         </div>
         
         <div style="text-align: left; width:300px"> 
-        <h5 class="card-title " >${song.name}</h5>
+          <h5 class="card-title " >${song.name}</h5>
         </div>
+
         <div style="text-align: left; width:300px"> 
-        <h5 class="card-title " >${song.artistName}</h5>
+          <h5 class="card-title " >${song.artistName}</h5>
         </div>
+
         <div style="text-align: left; width:300px"> 
-        <h5 class="card-title" >${song.playbackSeconds}</h5>
+          <h5 class="card-title" >${song.playbackSeconds}</h5>
         </div>
-        
+
+        <div style="text-align: left; width:300px"> 
+          <i class="ph-plus" ref="plusbtn"></i>
         </div>
-        `;
+
+      </div>`;
+
+    let { plusbtn } = context.collect();
+    plusbtn.addEventListener("click", () => console.log(song.name));
+    songElement = songObject.appendChild(context);
+    return songElement;
   });
   console.log(showInHtml);
-  songObject.innerHTML = showInHtml.join(" ");
-  console.log(songObject);
+
+  // let tesyt = showInHtml.join(" ");
+  // console.log(tesyt);
+  // songObject.innerHTML = tesyt;
 }
 
 function perviousSong() {
