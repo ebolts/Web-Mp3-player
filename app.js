@@ -101,7 +101,7 @@ function requestLocal() {
     IDQuery.onsuccess = function () {
       console.log(IDQuery);
       songObject.innerHTML = " ";
-      const showInHtml = IDQuery.result.map((song) => {
+      const showInHtml = IDQuery.result.reverse().map((song) => {
         console.log(song.id);
 
         let songElement;
@@ -161,7 +161,7 @@ function requestLocal() {
             store.delete(song.id);
 
             console.log(removeElementNode);
-            G++;
+            deleteSongsCount++;
 
             songElement = songObject.removeChild(removeElementNode);
 
