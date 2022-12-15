@@ -68,14 +68,26 @@ request.onsuccess = function () {
   store.put({
     id: 1,
     name: "Cursetest",
+    artist: "Curse Artist",
+    time: "111",
     mp3data: "curemp3DataURL",
     image: "cureimageDataURL",
   });
   store.put({
     id: 2,
     name: "Bad Habitstests",
+    artist: "Bad Habits artist",
+    time: "222",
     mp3data: "badhabitsmp3DataURL",
     image: "badhabitsimageDataURL",
+  });
+  store.put({
+    id: 3,
+    name: "test song",
+    artist: "test artist",
+    time: "333",
+    mp3data: "testDataURL",
+    image: "testimageDataURL",
   });
 
   transaction.oncomplete = function () {

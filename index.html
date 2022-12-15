@@ -29,7 +29,9 @@
             </button>
           </li>
           <li>
-            <button><i class="ph-music-notes"></i>Discover</button>
+            <button class="discover">
+              <i class="ph-music-notes"></i>Discover
+            </button>
           </li>
           <li>
             <button><i class="ph-magnifying-glass"></i>Search</button>
@@ -99,7 +101,14 @@
             <button>Playlist #4</button>
           </li>
         </ul>
-        <ul class="sub-menu-discover"></ul>
+        <ul class="sub-menu-discover">
+          <li>
+            <button>test button</button>
+          </li>
+          <li>
+            <button>test button</button>
+          </li>
+        </ul>
         <input type="file" id="fileInput" accept=".mp3" style="display: none" />
         <button type="submit" id="submit1" style="display: none">
           submit1
@@ -124,8 +133,8 @@
     <div class="media-player">
       <img src="" alt="" class="song-box-img" />
       <div class="song-info-small">
-        <h6 class="song-text-small">Song Title</h6>
-        <h6 class="song-text-small">Song Artist</h6>
+        <h6 class="MP-name"></h6>
+        <h6 class="MP-artist"></h6>
       </div>
       <button class="back">
         <i class="ph-skip-back"></i>
