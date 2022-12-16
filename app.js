@@ -1,25 +1,21 @@
 import f from "./facon.js";
 
-const playButton = document.querySelector(".start");
-const musicPlayer = document.querySelector(".media-player");
-const songTitle = document.querySelector(".songTitle");
-const audioSong = document.querySelector("audio");
-const songImage = document.querySelector(".songImage");
-const loadingSong = document.querySelector(".loading");
-const songObject = document.querySelector(".song-object");
-
-const songItem = document.querySelector(".songItem");
+const playButton = document.querySelector(".start"),
+  musicPlayer = document.querySelector(".media-player"),
+  songTitle = document.querySelector(".songTitle"),
+  audioSong = document.querySelector("audio"),
+  songImage = document.querySelector(".songImage"),
+  loadingSong = document.querySelector(".loading"),
+  songObject = document.querySelector(".song-object"),
+  songItem = document.querySelector(".songItem"),
+  playlist = document.querySelector(".playlist"),
+  recentplayed = document.querySelector(".recently-played"),
+  discoverSongs = document.querySelector(".discover"),
+  searchbtn = document.querySelector(".search"),
+  upload = document.querySelector(".upload");
 let deleteSongsCount = 0;
 let songs;
-
-const playlist = document.querySelector(".playlist");
-const recentplayed = document.querySelector(".recently-played");
-const discoverSongs = document.querySelector(".discover");
-
 recentplayed.addEventListener("click", () => {
-  document.querySelector(".sub-menu-playlist").style.display = "none";
-  document.querySelector(".sub-menu-discover").style.display = "none";
-  document.querySelector(".sub-menu-recent-songs").style.display = "block";
   requestLocal();
 });
 
@@ -27,12 +23,44 @@ playlist.addEventListener("click", () => {
   document.querySelector(".sub-menu-discover").style.display = "none";
   document.querySelector(".sub-menu-recent-songs").style.display = "none";
   document.querySelector(".sub-menu-playlist").style.display = "block";
+  document.querySelector(".sub-menu-search").style.display = "none";
+  document.querySelector(".sub-menu-upload").style.display = "none";
+  document.querySelector(".table-title").innerHTML = "Playlist";
 });
 
 discoverSongs.addEventListener("click", () => {
   document.querySelector(".sub-menu-playlist").style.display = "none";
   document.querySelector(".sub-menu-recent-songs").style.display = "none";
   document.querySelector(".sub-menu-discover").style.display = "block";
+  document.querySelector(".sub-menu-search").style.display = "none";
+  document.querySelector(".sub-menu-upload").style.display = "none";
+  document.querySelector(".table-title").innerHTML = "Discover";
+  retrieveSongs();
+});
+
+searchbtn.addEventListener("click", () => {
+  document.querySelector(".sub-menu-playlist").style.display = "none";
+  document.querySelector(".sub-menu-recent-songs").style.display = "none";
+  document.querySelector(".sub-menu-discover").style.display = "none";
+  document.querySelector(".sub-menu-upload").style.display = "none";
+  document.querySelector(".sub-menu-search").style.display = "block";
+  document.querySelector(".table-title").innerHTML = "Search";
+  songObject.innerHTML = " ";
+
+  const form = document.querySelector("#searchForm");
+  form.addEventListener("submit", function (event) {
+    event.preventDefault();
+    retrieveSongsSearch();
+  });
+});
+
+upload.addEventListener("click", () => {
+  document.querySelector(".sub-menu-playlist").style.display = "none";
+  document.querySelector(".sub-menu-recent-songs").style.display = "none";
+  document.querySelector(".sub-menu-discover").style.display = "none";
+  document.querySelector(".sub-menu-search").style.display = "none";
+  document.querySelector(".sub-menu-upload").style.display = "block";
+  document.querySelector(".table-title").innerHTML = "Upload";
   retrieveSongs();
 });
 
@@ -42,7 +70,7 @@ function isAudioPLaying() {
 
 async function retrieveSongs() {
   await fetch(
-    "http://api.napster.com/v2.2/artists/Art.28463069/tracks?apikey=YTkxZTRhNzAtODdlNy00ZjMzLTg0MWItOTc0NmZmNjU4Yzk4&limit=5"
+    "http://api.napster.com/v2.2/artists/Art.28463069/tracks/top?apikey=YTkxZTRhNzAtODdlNy00ZjMzLTg0MWItOTc0NmZmNjU4Yzk4&limit=10"
   )
     .then((response) => {
       if (!response.ok) {
@@ -51,6 +79,48 @@ async function retrieveSongs() {
       return response.json();
     })
     .then((data) => {
+      console.log(data);
+      songs = data.tracks;
+      console.log(songs);
+
+      loadFromAPI(songs);
+    })
+    .catch((error) =>
+      console.error("There was an issue with fetch request", error)
+    );
+}
+
+async function retrieveSongsSearch() {
+  const input = document.querySelector("#textInput");
+  const inputValue = input.value;
+  let test;
+
+  console.log(inputValue);
+  await fetch(
+    `http://api.napster.com/v2.2/search?apikey=YTkxZTRhNzAtODdlNy00ZjMzLTg0MWItOTc0NmZmNjU4Yzk4&per_type_limit=1&query=${inputValue}`
+  )
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response failed");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      console.log(data);
+      test = data.search.data.artists[0].id;
+      console.log(test);
+    });
+  await fetch(
+    `http://api.napster.com/v2.2/artists/${test}/tracks/top?apikey=YTkxZTRhNzAtODdlNy00ZjMzLTg0MWItOTc0NmZmNjU4Yzk4&limit=10`
+  )
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response failed");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      console.log(data);
       songs = data.tracks;
       console.log(songs);
 
@@ -75,6 +145,12 @@ function pauseAudio() {
 }
 
 function requestLocal() {
+  document.querySelector(".table-title").innerHTML = "Recently Added";
+  document.querySelector(".sub-menu-playlist").style.display = "none";
+  document.querySelector(".sub-menu-discover").style.display = "none";
+  document.querySelector(".sub-menu-search").style.display = "none";
+  document.querySelector(".sub-menu-upload").style.display = "none";
+  document.querySelector(".sub-menu-recent-songs").style.display = "block";
   console.log("open db on event click");
 
   let indexedDB =

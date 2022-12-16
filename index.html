@@ -34,10 +34,14 @@
             </button>
           </li>
           <li>
-            <button><i class="ph-magnifying-glass"></i>Search</button>
+            <button class="search">
+              <i class="ph-magnifying-glass"></i>Search
+            </button>
           </li>
           <li>
-            <button><i class="ph-upload-simple"></i>Upload</button>
+            <button class="upload">
+              <i class="ph-upload-simple"></i>Upload
+            </button>
           </li>
         </ul>
       </div>
@@ -109,15 +113,23 @@
             <button>test button</button>
           </li>
         </ul>
-        <input type="file" id="fileInput" accept=".mp3" style="display: none" />
-        <button type="submit" id="submit1" style="display: none">
-          submit1
-        </button>
+        <div class="sub-menu-search">
+          <form id="searchForm">
+            <label for="textInput">Search</label>
+            <p>feel free to search for an artist or song here</p>
+            <input type="text" id="textInput" required />
+            <input type="submit" class="searchBtn" value="Submit" />
+          </form>
+        </div>
+        <div class="sub-menu-upload">
+          <input type="file" id="fileInput" accept=".mp3" />
+          <button type="submit" id="submit1">submit1</button>
+        </div>
       </div>
       <div class="listMenu">
         <div class="list-menu-item">
           <div class="table-header">
-            <h4 class="table-title" style="width: 300px">Title</h4>
+            <h4 class="table-title" style="width: 300px"></h4>
             <i class="ph-music-notes" style="width: 300px"></i>
             <i class="ph-user" style="width: 300px"></i>
             <i class="ph-clock" style="width: 300px"></i>
