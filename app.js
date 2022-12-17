@@ -93,7 +93,8 @@ async function retrieveSongs() {
 async function retrieveSongsSearch() {
   const input = document.querySelector("#textInput");
   const inputValue = input.value;
-  let test;
+  let artistName;
+  let trackName;
 
   console.log(inputValue);
   await fetch(
@@ -107,11 +108,32 @@ async function retrieveSongsSearch() {
     })
     .then((data) => {
       console.log(data);
-      test = data.search.data.artists[0].id;
-      console.log(test);
+      artistName = data.search.data.artists[0].id;
+      trackName = data.search.data.tracks[0].id;
     });
+
   await fetch(
-    `http://api.napster.com/v2.2/artists/${test}/tracks/top?apikey=YTkxZTRhNzAtODdlNy00ZjMzLTg0MWItOTc0NmZmNjU4Yzk4&limit=10`
+    `http://api.napster.com/v2.2/artists/${artistName}/tracks/top?apikey=YTkxZTRhNzAtODdlNy00ZjMzLTg0MWItOTc0NmZmNjU4Yzk4&limit=10`
+  )
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response failed");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      console.log(data);
+      songs = data.tracks;
+      console.log(songs);
+
+      loadFromAPI(songs);
+    })
+    .catch((error) =>
+      console.error("There was an issue with fetch request", error)
+    );
+
+  await fetch(
+    `http://api.napster.com/v2.2/tracks/${trackName}?apikey=YTkxZTRhNzAtODdlNy00ZjMzLTg0MWItOTc0NmZmNjU4Yzk4&limit=10`
   )
     .then((response) => {
       if (!response.ok) {
