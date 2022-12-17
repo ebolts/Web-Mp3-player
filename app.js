@@ -98,7 +98,7 @@ async function retrieveSongsSearch() {
 
   console.log(inputValue);
   await fetch(
-    `http://api.napster.com/v2.2/search?apikey=YTkxZTRhNzAtODdlNy00ZjMzLTg0MWItOTc0NmZmNjU4Yzk4&per_type_limit=1&query=${inputValue}`
+    `http://api.napster.com/v2.2/search?apikey=YTkxZTRhNzAtODdlNy00ZjMzLTg0MWItOTc0NmZmNjU4Yzk4&per_type_limit=10&query=${inputValue}`
   )
     .then((response) => {
       if (!response.ok) {
@@ -146,7 +146,7 @@ async function retrieveSongsSearch() {
       songs = data.tracks;
       console.log(songs);
 
-      loadFromAPI(songs);
+      loadSongsFromAPI(songs);
     })
     .catch((error) =>
       console.error("There was an issue with fetch request", error)
@@ -298,15 +298,22 @@ function requestLocal() {
             const MPimg = document.querySelector(".song-box-img");
             const MPName = document.querySelector(".MP-name");
             const MPArtist = document.querySelector(".MP-artist");
+            const PreviewTitle = document.querySelector(".song-info-title");
+
+            const PreviewArtistName =
+              document.querySelector(".song-info-artist");
+            const PreviewSongArt = document.querySelector(".preview-song-art");
+
+            PreviewSongArt.style.display = "block";
 
             IDQuery.onsuccess = function () {
-              console.log("nameQuery", IDQuery.result.name);
-              console.log("mp3dataQuery", IDQuery.result.mp3data);
-              console.log("imageQuery:", IDQuery.result.image);
               audioSong.src = `${IDQuery.result.mp3data}`;
 
-              img.style.backgroundImage = `url(${IDQuery.result.image})`;
+              img.style.backgroundImage = `url(${IDQuery.result.artistIMG})`;
               MPimg.style.backgroundImage = `url(${IDQuery.result.image})`;
+              PreviewSongArt.style.backgroundImage = `url(${IDQuery.result.image})`;
+              PreviewTitle.innerHTML = IDQuery.result.name;
+              PreviewArtistName.innerHTML = IDQuery.result.artist;
               MPName.innerHTML = IDQuery.result.name;
               MPArtist.innerHTML = IDQuery.result.artist;
             };
@@ -339,12 +346,14 @@ function loadFromAPI(songs) {
   songObject.innerHTML = " ";
   const showInHtml = songs.map((song) => {
     let albumArt = song.albumId;
-    let simg = `https://api.napster.com/imageserver/v2/albums/${albumArt}/images/500x500.jpg`;
+    let artisrtArt = song.artistId;
+    let trackArt = `https://api.napster.com/imageserver/v2/albums/${albumArt}/images/500x500.jpg`;
+    let artistIMG = `https://api.napster.com/imageserver/v2/artists/${artisrtArt}/images/633x422.jpg`;
 
     let context = f`<div ref="songdiv" style="display: flex; text-align: left; align-items:center;  "> 
 
         <div style="text-align: left; width:300px "> 
-          <img class="image" src=${simg} style=" width: 50%; height: auto;">
+          <img class="image" src=${trackArt} style=" width: 50%; height: auto;">
         </div>
         
         <div style="text-align: left; width:300px"> 
@@ -395,9 +404,10 @@ function loadFromAPI(songs) {
             id: countIndex.result + 1 + deleteSongsCount,
             name: song.name,
             artist: song.artistName,
+            artistIMG: artistIMG,
             time: song.playbackSeconds,
             mp3data: song.previewURL,
-            image: simg,
+            image: trackArt,
           });
         };
         tx.oncomplete = function () {
@@ -407,6 +417,70 @@ function loadFromAPI(songs) {
     });
 
     songdiv.addEventListener("click", () => {
+      const audioSong = document.querySelector("audio");
+      const img = document.querySelector(".testimg");
+      const MPimg = document.querySelector(".song-box-img");
+      const MPName = document.querySelector(".MP-name");
+      const MPArtist = document.querySelector(".MP-artist");
+      const PreviewTitle = document.querySelector(".song-info-title");
+      const PreviewArtistName = document.querySelector(".song-info-artist");
+      const PreviewSongArt = document.querySelector(".preview-song-art");
+      PreviewSongArt.style.display = "block";
+
+      audioSong.src = song.previewURL;
+
+      img.style.backgroundImage = `url(${artistIMG})`;
+      MPimg.style.backgroundImage = `url(${trackArt})`;
+      PreviewSongArt.style.backgroundImage = `url(${trackArt})`;
+      MPName.innerHTML = song.name;
+      MPArtist.innerHTML = song.artistName;
+      PreviewTitle.innerHTML = song.name;
+      PreviewArtistName.innerHTML = song.artistName;
+    });
+
+    console.log(songObject.appendChild(context));
+    songElement = songObject.appendChild(context);
+
+    return songElement;
+  });
+  console.log(showInHtml);
+}
+
+function loadSongsFromAPI(songs) {
+  let songElement;
+
+  const showInHtml = songs.map((song) => {
+    let albumArt = song.albumId;
+    let artisrtArt = song.artistId;
+    let trackArt = `https://api.napster.com/imageserver/v2/albums/${albumArt}/images/500x500.jpg`;
+    let artistIMG = `https://api.napster.com/imageserver/v2/artists/${artisrtArt}/images/633x422.jpg`;
+
+    let context = f`<div ref="songdiv" style="display: flex; text-align: left; align-items:center;  "> 
+
+        <div style="text-align: left; width:300px "> 
+          <img class="image" src=${trackArt} style=" width: 50%; height: auto;">
+        </div>
+        
+        <div style="text-align: left; width:300px"> 
+          <h5 class="card-title " >${song.name}</h5>
+        </div>
+
+        <div style="text-align: left; width:300px"> 
+          <h5 class="card-title " >${song.artistName}</h5>
+        </div>
+
+        <div style="text-align: left; width:300px"> 
+          <h5 class="card-title" >${song.playbackSeconds}</h5>
+        </div>
+
+        <div style="text-align: left; width:300px"> 
+          <i class="ph-plus" ref="plusbtn"></i>
+        </div>
+
+      </div>`;
+
+    let { plusbtn, songdiv } = context.collect();
+    plusbtn.addEventListener("click", () => {
       console.log("open db on event click");
       let indexedDB =
         window.indexedDB ||
@@ -426,32 +500,48 @@ function loadFromAPI(songs) {
         let db = open.result;
         let tx = db.transaction("songs", "readwrite");
         let store = tx.objectStore("songs");
-        const audioSong = document.querySelector("audio");
+        let countIndex = store.count();
 
-        const songIndex = store.index("song_name");
-        const IDQuery = songIndex.get([song.name]);
-        const img = document.querySelector(".testimg");
-        const MPimg = document.querySelector(".song-box-img");
-        const MPName = document.querySelector(".MP-name");
-        const MPArtist = document.querySelector(".MP-artist");
-
-        IDQuery.onsuccess = function () {
-          console.log("nameQuery", IDQuery.result.name);
-          console.log("mp3dataQuery", IDQuery.result.mp3data);
-          console.log("imageQuery:", IDQuery.result.image);
-          audioSong.src = `${IDQuery.result.mp3data}`;
-
-          img.style.backgroundImage = `url(${IDQuery.result.image})`;
-          MPimg.style.backgroundImage = `url(${IDQuery.result.image})`;
-          MPName.innerHTML = IDQuery.result.name;
-          MPArtist.innerHTML = IDQuery.result.artist;
+        countIndex.onsuccess = function () {
+          //console.log("countIndex", countIndex.result);
+          //console.log("song id:", countIndex.result + 1 + deleteSongsCount);
+          store.put({
+            id: countIndex.result + 1 + deleteSongsCount,
+            name: song.name,
+            artist: song.artistName,
+            time: song.playbackSeconds,
+            mp3data: song.previewURL,
+            image: trackArt,
+          });
         };
-
         tx.oncomplete = function () {
           db.close();
         };
       };
     });
+
+    songdiv.addEventListener("click", () => {
+      const audioSong = document.querySelector("audio");
+      const img = document.querySelector(".testimg");
+      const MPimg = document.querySelector(".song-box-img");
+      const MPName = document.querySelector(".MP-name");
+      const MPArtist = document.querySelector(".MP-artist");
+      const PreviewTitle = document.querySelector(".song-info-title");
+      const PreviewArtistName = document.querySelector(".song-info-artist");
+      const PreviewSongArt = document.querySelector(".preview-song-art");
+      PreviewSongArt.style.display = "block";
+
+      audioSong.src = song.previewURL;
+
+      img.style.backgroundImage = `url(${artistIMG})`;
+      MPimg.style.backgroundImage = `url(${trackArt})`;
+      PreviewSongArt.style.backgroundImage = `url(${trackArt})`;
+      MPName.innerHTML = song.name;
+      MPArtist.innerHTML = song.artistName;
+      PreviewTitle.innerHTML = song.name;
+      PreviewArtistName.innerHTML = song.artistName;
+    });
+
     console.log(songObject.appendChild(context));
     songElement = songObject.appendChild(context);
 
