@@ -46,6 +46,7 @@ discoverSongs.addEventListener("click", () => {
   document.querySelector(".songsWithName").style.display = "none";
   document.querySelector(".artistTracks").style.display = "none";
   titleState = false;
+  songObject1.innerHTML = " ";
   retrieveSongs();
 });
 
@@ -127,14 +128,16 @@ async function retrieveSongsSearch() {
       artistName = data.search.data.artists[0].id;
       console.log("artistName console log (id): ", artistName);
 
-      trackName = data.search.data.tracks[0].id;
+      trackName = data.search.data.tracks;
+      console.log("trackName: ", trackName);
+      loadSearchSongsFromAPI(trackName);
     })
     .catch((error) =>
       console.error("There was an issue with fetch request", error)
     );
 
   await fetch(
-    `http://api.napster.com/v2.2/artists/${artistName}/tracks/top?apikey=YTkxZTRhNzAtODdlNy00ZjMzLTg0MWItOTc0NmZmNjU4Yzk4&limit=10`
+    `http://api.napster.com/v2.2/artists/${artistName}/tracks/top?apikey=YTkxZTRhNzAtODdlNy00ZjMzLTg0MWItOTc0NmZmNjU4Yzk4&limit=20`
   )
     .then((response) => {
       if (!response.ok) {
@@ -144,30 +147,10 @@ async function retrieveSongsSearch() {
     })
     .then((data) => {
       console.log("ArtistName data object: ", data);
+
+      songs = data.tracks;
       console.log("ArtistName songs console log: ", songs);
-      songs = data.tracks;
-
       loadSearchArtistFromAPI(songs);
-    })
-    .catch((error) =>
-      console.error("There was an issue with fetch request", error)
-    );
-
-  await fetch(
-    `http://api.napster.com/v2.2/tracks/${trackName}?apikey=YTkxZTRhNzAtODdlNy00ZjMzLTg0MWItOTc0NmZmNjU4Yzk4&limit=10`
-  )
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Network response failed");
-      }
-      return response.json();
-    })
-    .then((data) => {
-      console.log(data);
-      songs = data.tracks;
-      // console.log(songs);
-
-      loadSearchSongsFromAPI(songs);
     })
     .catch((error) =>
       console.error("There was an issue with fetch request", error)
@@ -223,15 +206,18 @@ function requestLocal() {
       songObject1.innerHTML = " ";
 
       const DisplayArrayOfSongs = IDQuery.result.reverse().map((song) => {
-        console.log(song.id);
-
+        let seconds = song.time;
         let songElement;
         console.log(song);
 
-        let context = f`<div class="song-id-${song.id}" ref="songdiv" style="display: flex; text-align: left; align-items:center;  "> 
+        let context = f`<div class="song-id-${
+          song.id
+        }" ref="songdiv" style="display: flex; text-align: left; align-items:center;  "> 
     
             <div style="text-align: left; width:300px "> 
-            <img class="image" src=${song.image} style=" width: 50%; height: auto;">
+            <img class="image" src=${
+              song.image
+            } style=" width: 50%; height: auto;">
             </div>
             
             <div style="text-align: left; width:300px"> 
@@ -243,7 +229,7 @@ function requestLocal() {
             </div>
     
             <div style="text-align: left; width:300px"> 
-              <h5 class="card-title" >${song.time}</h5>
+              <h5 class="card-title" >${secondsToMinutes(seconds)}</h5>
             </div>
     
             <div style="text-align: left; width:300px"> 
@@ -374,13 +360,14 @@ function requestLocal() {
 
 function loadSearchArtistFromAPI(songs) {
   songObject.innerHTML = " ";
-  songObject1.innerHTML = " ";
+
   let songElement;
   const DisplayArrayOfSongs = songs.map((song) => {
     let albumArt = song.albumId;
     let artisrtArt = song.artistId;
     let trackArt = `https://api.napster.com/imageserver/v2/albums/${albumArt}/images/500x500.jpg`;
     let artistIMG = `https://api.napster.com/imageserver/v2/artists/${artisrtArt}/images/633x422.jpg`;
+    let seconds = song.playbackSeconds;
 
     let context = f`
     <div ref="songdiv" style="display: flex; text-align: left; align-items:center;  "> 
@@ -398,7 +385,7 @@ function loadSearchArtistFromAPI(songs) {
         </div>
 
         <div style="text-align: left; width:300px"> 
-          <h5 class="card-title" >${song.playbackSeconds}</h5>
+          <h5 class="card-title" >${secondsToMinutes(seconds)}</h5>
         </div>
 
         <div style="text-align: left; width:300px"> 
@@ -479,7 +466,6 @@ function loadSearchArtistFromAPI(songs) {
       PreviewArtistName.innerHTML = song.artistName;
     });
 
-    console.log(songObject.appendChild(context));
     songElement = songObject.appendChild(context);
 
     return songElement;
@@ -488,17 +474,19 @@ function loadSearchArtistFromAPI(songs) {
   if (DisplayArrayOfSongs.length > 0 && titleState == true) {
     document.querySelector(".artistTracks").style.display = "block";
   }
-  console.log(DisplayArrayOfSongs);
 }
 
 function loadSearchSongsFromAPI(songs) {
+  songObject1.innerHTML = " ";
   let songElement;
 
   const DisplayArrayOfSongs = songs.map((song) => {
+    console.log("song: ", song);
     let albumArt = song.albumId;
     let artisrtArt = song.artistId;
     let trackArt = `https://api.napster.com/imageserver/v2/albums/${albumArt}/images/500x500.jpg`;
     let artistIMG = `https://api.napster.com/imageserver/v2/artists/${artisrtArt}/images/633x422.jpg`;
+    let seconds = song.playbackSeconds;
 
     let context = f`<div ref="songdiv" style="display: flex; text-align: left; align-items:center;  "> 
 
@@ -515,7 +503,7 @@ function loadSearchSongsFromAPI(songs) {
         </div>
 
         <div style="text-align: left; width:300px"> 
-          <h5 class="card-title" >${song.playbackSeconds}</h5>
+          <h5 class="card-title" >${secondsToMinutes(seconds)}</h5>
         </div>
 
         <div style="text-align: left; width:300px"> 
@@ -596,7 +584,6 @@ function loadSearchSongsFromAPI(songs) {
       PreviewArtistName.innerHTML = song.artistName;
     });
 
-    console.log(songObject1.appendChild(context));
     songElement = songObject1.appendChild(context);
 
     return songElement;
@@ -604,7 +591,6 @@ function loadSearchSongsFromAPI(songs) {
   if (DisplayArrayOfSongs.length > 0) {
     document.querySelector(".songsWithName").style.display = "block";
   }
-  console.log(DisplayArrayOfSongs);
 }
 
 function perviousSong() {
@@ -631,3 +617,12 @@ requestLocal();
 playButton.addEventListener("click", () => {
   isAudioPLaying() ? pauseAudio() : playAudio(); // is audio play true? then pause else play
 });
+function secondsToMinutes(seconds) {
+  let minutes = Math.floor(seconds / 60);
+  let remainingSeconds = seconds % 60;
+  // Add a leading zero to the seconds
+  if (remainingSeconds < 10) {
+    remainingSeconds = "0" + remainingSeconds;
+  }
+  return minutes + ":" + remainingSeconds;
+}
