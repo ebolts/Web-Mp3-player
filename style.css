@@ -84,11 +84,11 @@ body {
   overflow-y: auto;
 }
 
-div {
+/* div {
   border: 1px;
   border-color: red;
   border-style: solid;
-}
+} */
 li {
   list-style-type: none;
 }
@@ -97,6 +97,9 @@ li {
 .sub-menu-recent-songs > li,
 .sub-menu-discover > li {
   margin-top: 30px;
+}
+.selected {
+  background-color: gray;
 }
 
 .ph-music-notes-plus,

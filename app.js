@@ -7,6 +7,7 @@ const playButton = document.querySelector(".start"),
   songImage = document.querySelector(".songImage"),
   loadingSong = document.querySelector(".loading"),
   songObject = document.querySelector(".song-object"),
+  songObject1 = document.querySelector(".song-object1"),
   songItem = document.querySelector(".songItem"),
   playlist = document.querySelector(".playlist"),
   recentplayed = document.querySelector(".recently-played"),
@@ -15,7 +16,10 @@ const playButton = document.querySelector(".start"),
   upload = document.querySelector(".upload");
 let deleteSongsCount = 0;
 let songs;
+let titleState;
 recentplayed.addEventListener("click", () => {
+  document.querySelector(".songsWithName").style.display = "none";
+  document.querySelector(".artistTracks").style.display = "none";
   requestLocal();
 });
 
@@ -26,6 +30,9 @@ playlist.addEventListener("click", () => {
   document.querySelector(".sub-menu-search").style.display = "none";
   document.querySelector(".sub-menu-upload").style.display = "none";
   document.querySelector(".table-title").innerHTML = "Playlist";
+
+  document.querySelector(".songsWithName").style.display = "none";
+  document.querySelector(".artistTracks").style.display = "none";
 });
 
 discoverSongs.addEventListener("click", () => {
@@ -35,6 +42,10 @@ discoverSongs.addEventListener("click", () => {
   document.querySelector(".sub-menu-search").style.display = "none";
   document.querySelector(".sub-menu-upload").style.display = "none";
   document.querySelector(".table-title").innerHTML = "Discover";
+
+  document.querySelector(".songsWithName").style.display = "none";
+  document.querySelector(".artistTracks").style.display = "none";
+  titleState = false;
   retrieveSongs();
 });
 
@@ -46,8 +57,12 @@ searchbtn.addEventListener("click", () => {
   document.querySelector(".sub-menu-search").style.display = "block";
   document.querySelector(".table-title").innerHTML = "Search";
   songObject.innerHTML = " ";
+  songObject1.innerHTML = " ";
+  document.querySelector(".songsWithName").style.display = "none";
+  document.querySelector(".artistTracks").style.display = "none";
 
   const form = document.querySelector("#searchForm");
+  titleState = true;
   form.addEventListener("submit", function (event) {
     event.preventDefault();
     retrieveSongsSearch();
@@ -83,7 +98,7 @@ async function retrieveSongs() {
       songs = data.tracks;
       console.log(songs);
 
-      loadFromAPI(songs);
+      loadSearchArtistFromAPI(songs);
     })
     .catch((error) =>
       console.error("There was an issue with fetch request", error)
@@ -107,10 +122,16 @@ async function retrieveSongsSearch() {
       return response.json();
     })
     .then((data) => {
-      console.log(data);
+      console.log("data object to get artist id: ", data);
+
       artistName = data.search.data.artists[0].id;
+      console.log("artistName console log (id): ", artistName);
+
       trackName = data.search.data.tracks[0].id;
-    });
+    })
+    .catch((error) =>
+      console.error("There was an issue with fetch request", error)
+    );
 
   await fetch(
     `http://api.napster.com/v2.2/artists/${artistName}/tracks/top?apikey=YTkxZTRhNzAtODdlNy00ZjMzLTg0MWItOTc0NmZmNjU4Yzk4&limit=10`
@@ -122,11 +143,11 @@ async function retrieveSongsSearch() {
       return response.json();
     })
     .then((data) => {
-      console.log(data);
+      console.log("ArtistName data object: ", data);
+      console.log("ArtistName songs console log: ", songs);
       songs = data.tracks;
-      console.log(songs);
 
-      loadFromAPI(songs);
+      loadSearchArtistFromAPI(songs);
     })
     .catch((error) =>
       console.error("There was an issue with fetch request", error)
@@ -144,9 +165,9 @@ async function retrieveSongsSearch() {
     .then((data) => {
       console.log(data);
       songs = data.tracks;
-      console.log(songs);
+      // console.log(songs);
 
-      loadSongsFromAPI(songs);
+      loadSearchSongsFromAPI(songs);
     })
     .catch((error) =>
       console.error("There was an issue with fetch request", error)
@@ -199,7 +220,9 @@ function requestLocal() {
     IDQuery.onsuccess = function () {
       console.log(IDQuery);
       songObject.innerHTML = " ";
-      const showInHtml = IDQuery.result.reverse().map((song) => {
+      songObject1.innerHTML = " ";
+
+      const DisplayArrayOfSongs = IDQuery.result.reverse().map((song) => {
         console.log(song.id);
 
         let songElement;
@@ -231,6 +254,14 @@ function requestLocal() {
           </div>`;
 
         let { minusbtn, songdiv } = context.collect();
+        document.addEventListener("click", function (event) {
+          songdiv.classList.add("selected");
+          // checks if the div element is click
+          // in this case it shouldn't be (e.g clicked on another div) so remove background
+          if (!songdiv.contains(event.target)) {
+            songdiv.classList.remove("selected");
+          }
+        });
         minusbtn.addEventListener("click", () => {
           console.log("open db on event click");
           let indexedDB =
@@ -331,8 +362,8 @@ function requestLocal() {
       });
 
       //img.style.backgroundImage = `${IDQuery.result.image}`;
-      console.log(showInHtml);
-      return showInHtml;
+      console.log(DisplayArrayOfSongs);
+      return DisplayArrayOfSongs;
     };
 
     tx.oncomplete = function () {
@@ -341,16 +372,18 @@ function requestLocal() {
   };
 }
 
-function loadFromAPI(songs) {
-  let songElement;
+function loadSearchArtistFromAPI(songs) {
   songObject.innerHTML = " ";
-  const showInHtml = songs.map((song) => {
+  songObject1.innerHTML = " ";
+  let songElement;
+  const DisplayArrayOfSongs = songs.map((song) => {
     let albumArt = song.albumId;
     let artisrtArt = song.artistId;
     let trackArt = `https://api.napster.com/imageserver/v2/albums/${albumArt}/images/500x500.jpg`;
     let artistIMG = `https://api.napster.com/imageserver/v2/artists/${artisrtArt}/images/633x422.jpg`;
 
-    let context = f`<div ref="songdiv" style="display: flex; text-align: left; align-items:center;  "> 
+    let context = f`
+    <div ref="songdiv" style="display: flex; text-align: left; align-items:center;  "> 
 
         <div style="text-align: left; width:300px "> 
           <img class="image" src=${trackArt} style=" width: 50%; height: auto;">
@@ -375,6 +408,14 @@ function loadFromAPI(songs) {
       </div>`;
 
     let { plusbtn, songdiv } = context.collect();
+    document.addEventListener("click", function (event) {
+      songdiv.classList.add("selected");
+      // checks if the div element is click
+      // in this case it shouldn't be (e.g clicked on another div) so remove background
+      if (!songdiv.contains(event.target)) {
+        songdiv.classList.remove("selected");
+      }
+    });
     plusbtn.addEventListener("click", () => {
       console.log("open db on event click");
       let indexedDB =
@@ -443,13 +484,17 @@ function loadFromAPI(songs) {
 
     return songElement;
   });
-  console.log(showInHtml);
+
+  if (DisplayArrayOfSongs.length > 0 && titleState == true) {
+    document.querySelector(".artistTracks").style.display = "block";
+  }
+  console.log(DisplayArrayOfSongs);
 }
 
-function loadSongsFromAPI(songs) {
+function loadSearchSongsFromAPI(songs) {
   let songElement;
 
-  const showInHtml = songs.map((song) => {
+  const DisplayArrayOfSongs = songs.map((song) => {
     let albumArt = song.albumId;
     let artisrtArt = song.artistId;
     let trackArt = `https://api.napster.com/imageserver/v2/albums/${albumArt}/images/500x500.jpg`;
@@ -480,6 +525,14 @@ function loadSongsFromAPI(songs) {
       </div>`;
 
     let { plusbtn, songdiv } = context.collect();
+    document.addEventListener("click", function (event) {
+      songdiv.classList.add("selected");
+      // checks if the div element is click
+      // in this case it shouldn't be (e.g clicked on another div) so remove background
+      if (!songdiv.contains(event.target)) {
+        songdiv.classList.remove("selected");
+      }
+    });
     plusbtn.addEventListener("click", () => {
       console.log("open db on event click");
       let indexedDB =
@@ -509,6 +562,7 @@ function loadSongsFromAPI(songs) {
             id: countIndex.result + 1 + deleteSongsCount,
             name: song.name,
             artist: song.artistName,
+            artistIMG: artistIMG,
             time: song.playbackSeconds,
             mp3data: song.previewURL,
             image: trackArt,
@@ -542,12 +596,15 @@ function loadSongsFromAPI(songs) {
       PreviewArtistName.innerHTML = song.artistName;
     });
 
-    console.log(songObject.appendChild(context));
-    songElement = songObject.appendChild(context);
+    console.log(songObject1.appendChild(context));
+    songElement = songObject1.appendChild(context);
 
     return songElement;
   });
-  console.log(showInHtml);
+  if (DisplayArrayOfSongs.length > 0) {
+    document.querySelector(".songsWithName").style.display = "block";
+  }
+  console.log(DisplayArrayOfSongs);
 }
 
 function perviousSong() {
