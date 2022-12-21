@@ -259,9 +259,9 @@ function requestLocal() {
         }" ref="songdiv" style="display: flex; text-align: left; align-items:center;  "> 
     
             <div style="text-align: left; width:300px "> 
-            <img class="image" src=${
-              song.image
-            } style=" width: 50%; height: auto;">
+              <img class="image" src=${
+                song.image
+              } style=" width: 50%; height: auto;">
             </div>
             
             <div style="text-align: left; width:300px"> 
@@ -368,10 +368,20 @@ function requestLocal() {
             PreviewSongArt.style.display = "block";
 
             IDQuery.onsuccess = function () {
-              audioSong.src = `${IDQuery.result.mp3data}`;
+              const isThereAnArtist = new Image();
 
-              img.style.backgroundImage = `url(${IDQuery.result.artistIMG})`;
-              MPimg.style.backgroundImage = `url(${IDQuery.result.image})`;
+              isThereAnArtist.src = IDQuery.result.artistIMG;
+              isThereAnArtist.onload = function () {
+                // The image has been successfully loaded
+                img.style.backgroundImage = `url(${IDQuery.result.artistIMG})`;
+              };
+              // Set a callback function to run if there was an error loading the image
+              isThereAnArtist.onerror = function () {
+                // There was an error loading the image
+                img.style.backgroundImage = `url(${IDQuery.result.image})`;
+              };
+
+              audioSong.src = `${IDQuery.result.mp3data}`;
               PreviewSongArt.style.backgroundImage = `url(${IDQuery.result.image})`;
               PreviewTitle.innerHTML = IDQuery.result.name;
               PreviewArtistName.innerHTML = IDQuery.result.artist;
@@ -497,8 +507,18 @@ function loadSearchArtistFromAPI(songs) {
       const PreviewTitle = document.querySelector(".song-info-title");
       const PreviewArtistName = document.querySelector(".song-info-artist");
       const PreviewSongArt = document.querySelector(".preview-song-art");
+      const isThereAnArtist = new Image();
+      isThereAnArtist.src = artistIMG;
+      isThereAnArtist.onload = function () {
+        // The image has been successfully loaded
+        img.style.backgroundImage = `url(${artistIMG})`;
+      };
+      // Set a callback function to run if there was an error loading the image
+      isThereAnArtist.onerror = function () {
+        // There was an error loading the image
+        img.style.backgroundImage = `url(${trackArt})`;
+      };
       PreviewSongArt.style.display = "block";
-
       audioSong.src = song.previewURL;
 
       img.style.backgroundImage = `url(${artistIMG})`;
@@ -615,6 +635,17 @@ function loadSearchSongsFromAPI(songs) {
       const PreviewTitle = document.querySelector(".song-info-title");
       const PreviewArtistName = document.querySelector(".song-info-artist");
       const PreviewSongArt = document.querySelector(".preview-song-art");
+      const isThereAnArtist = new Image();
+      isThereAnArtist.src = artistIMG;
+      isThereAnArtist.onload = function () {
+        // The image has been successfully loaded
+        img.style.backgroundImage = `url(${artistIMG})`;
+      };
+      // Set a callback function to run if there was an error loading the image
+      isThereAnArtist.onerror = function () {
+        // There was an error loading the image
+        img.style.backgroundImage = `url(${trackArt})`;
+      };
       PreviewSongArt.style.display = "block";
 
       audioSong.src = song.previewURL;
