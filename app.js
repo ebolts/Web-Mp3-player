@@ -13,7 +13,8 @@ const playButton = document.querySelector(".start"),
   recentplayed = document.querySelector(".recently-played"),
   discoverSongs = document.querySelector(".discover"),
   searchbtn = document.querySelector(".search"),
-  upload = document.querySelector(".upload");
+  upload = document.querySelector(".upload"),
+  topTracks = document.querySelector(".topTracks");
 let deleteSongsCount = 0;
 let songs;
 let titleState;
@@ -47,7 +48,7 @@ discoverSongs.addEventListener("click", () => {
   document.querySelector(".artistTracks").style.display = "none";
   titleState = false;
   songObject1.innerHTML = " ";
-  retrieveSongs();
+  songObject.innerHTML = " ";
 });
 
 searchbtn.addEventListener("click", () => {
@@ -77,16 +78,59 @@ upload.addEventListener("click", () => {
   document.querySelector(".sub-menu-search").style.display = "none";
   document.querySelector(".sub-menu-upload").style.display = "block";
   document.querySelector(".table-title").innerHTML = "Upload";
-  retrieveSongs();
 });
 
 function isAudioPLaying() {
   return musicPlayer.classList.contains("playing");
 }
 
-async function retrieveSongs() {
+async function retrieveTopTracksWeek() {
   await fetch(
-    "http://api.napster.com/v2.2/artists/Art.28463069/tracks/top?apikey=YTkxZTRhNzAtODdlNy00ZjMzLTg0MWItOTc0NmZmNjU4Yzk4&limit=10"
+    "http://api.napster.com/v2.2/tracks/top?apikey=YTkxZTRhNzAtODdlNy00ZjMzLTg0MWItOTc0NmZmNjU4Yzk4&range=week"
+  )
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response failed");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      console.log(data);
+      songs = data.tracks;
+      console.log(songs);
+
+      loadSearchArtistFromAPI(songs);
+    })
+    .catch((error) =>
+      console.error("There was an issue with fetch request", error)
+    );
+}
+
+async function retrieveChristmasTracks() {
+  await fetch(
+    "http://api.napster.com/v2.2/genres/g.120/tracks/top?apikey=YTkxZTRhNzAtODdlNy00ZjMzLTg0MWItOTc0NmZmNjU4Yzk4"
+  )
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response failed");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      console.log(data);
+      songs = data.tracks;
+      console.log(songs);
+
+      loadSearchArtistFromAPI(songs);
+    })
+    .catch((error) =>
+      console.error("There was an issue with fetch request", error)
+    );
+}
+
+async function retrieveRapHipHopTracks() {
+  await fetch(
+    "http://api.napster.com/v2.2/genres/g.146/tracks/top?apikey=YTkxZTRhNzAtODdlNy00ZjMzLTg0MWItOTc0NmZmNjU4Yzk4&range=week"
   )
     .then((response) => {
       if (!response.ok) {
@@ -626,3 +670,15 @@ function secondsToMinutes(seconds) {
   }
   return minutes + ":" + remainingSeconds;
 }
+
+topTracks.addEventListener("click", () => {
+  retrieveTopTracksWeek();
+});
+const christmasTracks = document.querySelector(".christmasTracks");
+christmasTracks.addEventListener("click", () => {
+  retrieveChristmasTracks();
+});
+const rapHipHopTracks = document.querySelector(".rapHipHopTracks");
+rapHipHopTracks.addEventListener("click", () => {
+  retrieveRapHipHopTracks();
+});
