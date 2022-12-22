@@ -2,9 +2,7 @@ import f from "./facon.js";
 
 const playButton = document.querySelector(".start"),
   musicPlayer = document.querySelector(".media-player"),
-  songTitle = document.querySelector(".songTitle"),
   audioSong = document.querySelector("audio"),
-  songImage = document.querySelector(".songImage"),
   loadingSong = document.querySelector(".loading"),
   songObject = document.querySelector(".song-object"),
   songObject1 = document.querySelector(".song-object1"),
@@ -78,6 +76,8 @@ upload.addEventListener("click", () => {
   document.querySelector(".sub-menu-search").style.display = "none";
   document.querySelector(".sub-menu-upload").style.display = "block";
   document.querySelector(".table-title").innerHTML = "Upload";
+  songObject.innerHTML = " ";
+  songObject1.innerHTML = " ";
 });
 
 function isAudioPLaying() {
@@ -99,7 +99,7 @@ async function retrieveTopTracksWeek() {
       songs = data.tracks;
       console.log(songs);
 
-      loadSearchArtistFromAPI(songs);
+      generalLoadSearchAPI(songs);
     })
     .catch((error) =>
       console.error("There was an issue with fetch request", error)
@@ -121,7 +121,7 @@ async function retrieveChristmasTracks() {
       songs = data.tracks;
       console.log(songs);
 
-      loadSearchArtistFromAPI(songs);
+      generalLoadSearchAPI(songs);
     })
     .catch((error) =>
       console.error("There was an issue with fetch request", error)
@@ -143,7 +143,7 @@ async function retrieveRapHipHopTracks() {
       songs = data.tracks;
       console.log(songs);
 
-      loadSearchArtistFromAPI(songs);
+      generalLoadSearchAPI(songs);
     })
     .catch((error) =>
       console.error("There was an issue with fetch request", error)
@@ -194,7 +194,7 @@ async function retrieveSongsSearch() {
 
       songs = data.tracks;
       console.log("ArtistName songs console log: ", songs);
-      loadSearchArtistFromAPI(songs);
+      generalLoadSearchAPI(songs);
     })
     .catch((error) =>
       console.error("There was an issue with fetch request", error)
@@ -241,18 +241,18 @@ function requestLocal() {
     let db = open.result;
     let tx = db.transaction("songs", "readwrite");
     let store = tx.objectStore("songs");
-    const audioSong = document.querySelector("audio");
+
     const IDQuery = store.getAll();
 
     IDQuery.onsuccess = function () {
-      console.log(IDQuery);
       songObject.innerHTML = " ";
       songObject1.innerHTML = " ";
 
       const DisplayArrayOfSongs = IDQuery.result.reverse().map((song) => {
         let seconds = song.time;
+        console.log(seconds);
         let songElement;
-        console.log(song);
+        console.log("song:", song);
 
         let context = f`<div class="song-id-${
           song.id
@@ -261,7 +261,9 @@ function requestLocal() {
             <div style="text-align: left; width:300px "> 
               <img class="image" src=${
                 song.image
-              } style=" width: 50%; height: auto;">
+              } style=" width: 50%; height: auto;  object-fit: cover;  background-size: cover; background-image:${
+          song.image
+        }" >
             </div>
             
             <div style="text-align: left; width:300px"> 
@@ -379,12 +381,20 @@ function requestLocal() {
               isThereAnArtist.onerror = function () {
                 // There was an error loading the image
                 img.style.backgroundImage = `url(${IDQuery.result.image})`;
+                // call style again to display any user uploaded songs not from url
+                img.style.backgroundImage = IDQuery.result.image;
               };
+              console.log("IDQuery.result.mp3data: ", IDQuery.result.mp3data);
+              console.log("IDQuery.result.time", IDQuery.result.time);
 
               audioSong.src = `${IDQuery.result.mp3data}`;
               PreviewSongArt.style.backgroundImage = `url(${IDQuery.result.image})`;
+              PreviewSongArt.style.backgroundImage = IDQuery.result.image;
               PreviewTitle.innerHTML = IDQuery.result.name;
               PreviewArtistName.innerHTML = IDQuery.result.artist;
+              MPimg.style.backgroundImage = `url(${IDQuery.result.image})`;
+              MPimg.style.backgroundImage = IDQuery.result.image;
+
               MPName.innerHTML = IDQuery.result.name;
               MPArtist.innerHTML = IDQuery.result.artist;
             };
@@ -412,7 +422,7 @@ function requestLocal() {
   };
 }
 
-function loadSearchArtistFromAPI(songs) {
+function generalLoadSearchAPI(songs) {
   songObject.innerHTML = " ";
 
   let songElement;
@@ -674,18 +684,6 @@ function perviousSong() {
 function nextSong() {
   isAudioPLaying() ? playAudio() : pauseAudio();
 }
-
-// function handleFormSubmit(event) {
-//   event.preventDefault();
-//   const data = new FormData(event.target);
-//   const formJSON = Object.fromEntries(data.entries());
-
-//   const results = document.querySelector(".results pre");
-
-//   results.innerText = JSON.stringify(formJSON, null, 2);
-// }
-// const form = document.querySelector(".fileForm");
-// form.addEventListener("submit", handleFormSubmit);
 
 requestLocal();
 // EVENT LISTENERS

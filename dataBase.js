@@ -1,22 +1,49 @@
 let songMp3;
 let songDisplay;
 let songName;
+let songArtist;
 let indexCount = 0;
+let audioTime;
+let t;
 const jsmediatags = window.jsmediatags;
 const submit1 = document.querySelector("#submit1");
 const backButton = document.querySelector(".back");
 const forwardButton = document.querySelector(".forward");
 const img = document.querySelector(".testimg");
 
-document.querySelector("#fileInput").addEventListener("change", function () {
+const audioSong = document.querySelector("audio");
+audioSong.addEventListener("loadedmetadata", () => {
+  // Display the duration of the audio file
+
+  audioTime = Math.floor(audioSong.duration);
+  console.log("audioTime: ", audioTime);
+});
+
+document.querySelector(".fileInput").addEventListener("change", function () {
   const file = this.files[0];
-  console.log(file);
+
+  // Read the file as a data URL
+  const reader = new FileReader();
+  reader.readAsDataURL(file);
+  reader.onload = () => {
+    // Get the data URL of the audio file
+    const dataURL = reader.result;
+    // does allow user to playsong before submitted. But is needed to get song duration from source.
+    audioSong.src = dataURL;
+    songMp3 = dataURL;
+  };
+
   // read mp3 file metadata to collect image and name
   jsmediatags.read(file, {
     onSuccess: function (tag) {
+      console.log("tag:", tag);
+      console.log("tags:", tag.tags);
       // Array buffer to base64
       const data = tag.tags.picture.data;
       const format = tag.tags.picture.format;
+      songArtist = tag.tags.artist;
+      songName = tag.tags.title;
+      console.log("songname:", songName);
       let base64String = "";
       for (let i = 0; i < data.length; i++) {
         base64String += String.fromCharCode(data[i]);
@@ -24,17 +51,16 @@ document.querySelector("#fileInput").addEventListener("change", function () {
       // Output media tags
       songDisplay = `url(data:${format};base64,${window.btoa(base64String)})`;
       console.log(songDisplay);
-      document.querySelector(".testimg").style.backgroundImage = songDisplay;
+      //document.querySelector(".testimg").style.backgroundImage = songDisplay;
     },
     onError: function (error) {
       console.log(error);
     },
   });
 
-  songMp3 = file.name;
-  songName = songMp3.substring(-1, songMp3.length - 4);
-  console.log("songname:", songName);
+  //songName = songMp3.substring(-1, songMp3.length - 4);
 });
+
 const indexedDB =
   window.indexedDB ||
   window.mozIndexedDB ||
@@ -121,6 +147,8 @@ submit1.addEventListener("click", () => {
       store.put({
         id: countIndex.result + 1,
         name: songName,
+        artist: songArtist,
+        time: audioTime,
         mp3data: songMp3,
         image: songDisplay,
       });
@@ -130,7 +158,7 @@ submit1.addEventListener("click", () => {
       const audioSong = document.querySelector("audio");
 
       SQuery.onsuccess = function () {
-        console.log("nameQuery:", SQuery.result.mp3data);
+        console.log("time :", SQuery.result.time);
         audioSong.src = `${SQuery.result.mp3data}`;
       };
     };
