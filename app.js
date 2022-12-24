@@ -32,6 +32,8 @@ playlist.addEventListener("click", () => {
 
   document.querySelector(".songsWithName").style.display = "none";
   document.querySelector(".artistTracks").style.display = "none";
+  songObject.innerHTML = " ";
+  songObject1.innerHTML = " ";
 });
 
 discoverSongs.addEventListener("click", () => {
@@ -256,9 +258,10 @@ function requestLocal() {
 
         let context = f`<div class="song-id-${
           song.id
-        }" ref="songdiv" style="display: flex; text-align: left; align-items:center;  "> 
-    
-            <div style="text-align: left; width:300px "> 
+        }" ref="songdiv" style="display: flex; text-align: left; align-items:center; max-height: 152px; 
+          margin: 15px 0px 15px 0px; 
+            " > 
+            <div style="display: flex; align-items: left; justify-content: left;  width:300px; max-height: 152px; height: 100%; "> 
               <img class="image" src=${
                 song.image
               } style=" width: 50%; height: auto;  object-fit: cover;  background-size: cover; background-image:${
@@ -266,19 +269,19 @@ function requestLocal() {
         }" >
             </div>
             
-            <div style="text-align: left; width:300px"> 
+            <div style="text-align: left; width:300px; padding-right: 10px"> 
               <h5 class="card-title " >${song.name}</h5>
             </div>
     
-            <div style="text-align: left; width:300px"> 
+            <div style="text-align: left; width:300px; padding-right: 10px"> 
               <h5 class="card-title " >${song.artist}</h5>
             </div>
     
-            <div style="text-align: left; width:300px"> 
+            <div style="text-align: left; width:300px; padding-right: 10px"> 
               <h5 class="card-title" >${secondsToMinutes(seconds)}</h5>
             </div>
     
-            <div style="text-align: left; width:300px"> 
+            <div style="text-align: left; width:300px; "> 
               <i class="ph-minus" ref="minusbtn"></i>
               
             </div>
@@ -286,8 +289,10 @@ function requestLocal() {
           </div>`;
 
         let { minusbtn, songdiv } = context.collect();
+
         document.addEventListener("click", function (event) {
           songdiv.classList.add("selected");
+
           // checks if the div element is click
           // in this case it shouldn't be (e.g clicked on another div) so remove background
           if (!songdiv.contains(event.target)) {
@@ -375,25 +380,25 @@ function requestLocal() {
               isThereAnArtist.src = IDQuery.result.artistIMG;
               isThereAnArtist.onload = function () {
                 // The image has been successfully loaded
-                img.style.backgroundImage = `url(${IDQuery.result.artistIMG})`;
+                img.src = IDQuery.result.artistIMG;
               };
               // Set a callback function to run if there was an error loading the image
               isThereAnArtist.onerror = function () {
                 // There was an error loading the image
-                img.style.backgroundImage = `url(${IDQuery.result.image})`;
-                // call style again to display any user uploaded songs not from url
-                img.style.backgroundImage = IDQuery.result.image;
+                img.src = IDQuery.result.image;
+                // // call style again to display any user uploaded songs not from url
+                //img.style.backgroundImage = IDQuery.result.image;
               };
               console.log("IDQuery.result.mp3data: ", IDQuery.result.mp3data);
               console.log("IDQuery.result.time", IDQuery.result.time);
 
               audioSong.src = `${IDQuery.result.mp3data}`;
-              PreviewSongArt.style.backgroundImage = `url(${IDQuery.result.image})`;
-              PreviewSongArt.style.backgroundImage = IDQuery.result.image;
+              //PreviewSongArt.style.backgroundImage = `url(${IDQuery.result.image})`;
+              PreviewSongArt.src = IDQuery.result.image;
               PreviewTitle.innerHTML = IDQuery.result.name;
               PreviewArtistName.innerHTML = IDQuery.result.artist;
-              MPimg.style.backgroundImage = `url(${IDQuery.result.image})`;
-              MPimg.style.backgroundImage = IDQuery.result.image;
+
+              MPimg.src = IDQuery.result.image;
 
               MPName.innerHTML = IDQuery.result.name;
               MPArtist.innerHTML = IDQuery.result.artist;
@@ -433,27 +438,30 @@ function generalLoadSearchAPI(songs) {
     let artistIMG = `https://api.napster.com/imageserver/v2/artists/${artisrtArt}/images/633x422.jpg`;
     let seconds = song.playbackSeconds;
 
-    let context = f`
-    <div ref="songdiv" style="display: flex; text-align: left; align-items:center;  "> 
-
-        <div style="text-align: left; width:300px "> 
-          <img class="image" src=${trackArt} style=" width: 50%; height: auto;">
+    let context = f`<div class="song-id-${
+      song.id
+    }" ref="songdiv" style="display: flex; text-align: left; align-items:center; max-height: 152px; 
+      margin: 15px 0px 15px 0px; 
+        " > 
+        <div style="display: flex; align-items: left; justify-content: left;  width:300px; max-height: 152px; height: 100%; "> 
+          <img class="image" src=${trackArt} style=" width: 50%; height: auto;" >
         </div>
         
-        <div style="text-align: left; width:300px"> 
+        <div style="text-align: left; width:300px; padding-right: 10px"> 
           <h5 class="card-title " >${song.name}</h5>
         </div>
 
-        <div style="text-align: left; width:300px"> 
+        <div style="text-align: left; width:300px; padding-right: 10px"> 
           <h5 class="card-title " >${song.artistName}</h5>
         </div>
 
-        <div style="text-align: left; width:300px"> 
+        <div style="text-align: left; width:300px; padding-right: 10px"> 
           <h5 class="card-title" >${secondsToMinutes(seconds)}</h5>
         </div>
 
-        <div style="text-align: left; width:300px"> 
+        <div style="text-align: left; width:300px; "> 
           <i class="ph-plus" ref="plusbtn"></i>
+          
         </div>
 
       </div>`;
@@ -521,19 +529,18 @@ function generalLoadSearchAPI(songs) {
       isThereAnArtist.src = artistIMG;
       isThereAnArtist.onload = function () {
         // The image has been successfully loaded
-        img.style.backgroundImage = `url(${artistIMG})`;
+        img.src = artistIMG;
       };
       // Set a callback function to run if there was an error loading the image
       isThereAnArtist.onerror = function () {
         // There was an error loading the image
-        img.style.backgroundImage = `url(${trackArt})`;
+        img.src = trackArt;
       };
       PreviewSongArt.style.display = "block";
       audioSong.src = song.previewURL;
 
-      img.style.backgroundImage = `url(${artistIMG})`;
-      MPimg.style.backgroundImage = `url(${trackArt})`;
-      PreviewSongArt.style.backgroundImage = `url(${trackArt})`;
+      MPimg.src = trackArt;
+      PreviewSongArt.src = trackArt;
       MPName.innerHTML = song.name;
       MPArtist.innerHTML = song.artistName;
       PreviewTitle.innerHTML = song.name;
@@ -562,26 +569,30 @@ function loadSearchSongsFromAPI(songs) {
     let artistIMG = `https://api.napster.com/imageserver/v2/artists/${artisrtArt}/images/633x422.jpg`;
     let seconds = song.playbackSeconds;
 
-    let context = f`<div ref="songdiv" style="display: flex; text-align: left; align-items:center;  "> 
-
-        <div style="text-align: left; width:300px "> 
-          <img class="image" src=${trackArt} style=" width: 50%; height: auto;">
+    let context = f`<div class="song-id-${
+      song.id
+    }" ref="songdiv" style="display: flex; text-align: left; align-items:center; max-height: 152px; 
+      margin: 15px 0px 15px 0px; 
+        " > 
+        <div style="display: flex; align-items: left; justify-content: left;  width:300px; max-height: 152px; height: 100%; "> 
+          <img class="image" src=${trackArt} style=" width: 50%; height: auto;" >
         </div>
         
-        <div style="text-align: left; width:300px"> 
+        <div style="text-align: left; width:300px; padding-right: 10px"> 
           <h5 class="card-title " >${song.name}</h5>
         </div>
 
-        <div style="text-align: left; width:300px"> 
+        <div style="text-align: left; width:300px; padding-right: 10px"> 
           <h5 class="card-title " >${song.artistName}</h5>
         </div>
 
-        <div style="text-align: left; width:300px"> 
+        <div style="text-align: left; width:300px; padding-right: 10px"> 
           <h5 class="card-title" >${secondsToMinutes(seconds)}</h5>
         </div>
 
-        <div style="text-align: left; width:300px"> 
+        <div style="text-align: left; width:300px; "> 
           <i class="ph-plus" ref="plusbtn"></i>
+          
         </div>
 
       </div>`;
@@ -649,20 +660,21 @@ function loadSearchSongsFromAPI(songs) {
       isThereAnArtist.src = artistIMG;
       isThereAnArtist.onload = function () {
         // The image has been successfully loaded
-        img.style.backgroundImage = `url(${artistIMG})`;
+        img.src = artistIMG;
       };
       // Set a callback function to run if there was an error loading the image
       isThereAnArtist.onerror = function () {
         // There was an error loading the image
-        img.style.backgroundImage = `url(${trackArt})`;
+        img.src = trackArt;
       };
       PreviewSongArt.style.display = "block";
 
       audioSong.src = song.previewURL;
 
       img.style.backgroundImage = `url(${artistIMG})`;
-      MPimg.style.backgroundImage = `url(${trackArt})`;
-      PreviewSongArt.style.backgroundImage = `url(${trackArt})`;
+      PreviewSongArt.src = trackArt;
+
+      MPimg.src = trackArt;
       MPName.innerHTML = song.name;
       MPArtist.innerHTML = song.artistName;
       PreviewTitle.innerHTML = song.name;

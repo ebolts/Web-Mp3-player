@@ -49,7 +49,7 @@ document.querySelector(".fileInput").addEventListener("change", function () {
         base64String += String.fromCharCode(data[i]);
       }
       // Output media tags
-      songDisplay = `url(data:${format};base64,${window.btoa(base64String)})`;
+      songDisplay = `data:${format};base64,${window.btoa(base64String)}`;
       console.log(songDisplay);
       //document.querySelector(".testimg").style.backgroundImage = songDisplay;
     },
@@ -200,7 +200,7 @@ backButton.addEventListener("click", () => {
         console.log("nameQuery", IDQuery.result.mp3data);
         console.log("imageQuery:", IDQuery.result.image);
         audioSong.src = `${IDQuery.result.mp3data}`;
-        img.style.backgroundImage = `${IDQuery.result.image}`;
+        img.src = IDQuery.result.image;
         console.log(indexCount);
       };
     };
@@ -243,7 +243,7 @@ forwardButton.addEventListener("click", () => {
         console.log("nameQuery", IDQuery.result.mp3data);
         console.log("imageQuery:", IDQuery.result.image);
         audioSong.src = `${IDQuery.result.mp3data}`;
-        img.style.backgroundImage = `${IDQuery.result.image}`;
+        img.src = IDQuery.result.image;
         console.log(indexCount);
       };
     };
