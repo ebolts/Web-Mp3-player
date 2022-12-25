@@ -121,7 +121,8 @@ li {
 .main-menu-list > li,
 .sub-menu-playlist > li,
 .sub-menu-recent-songs > li,
-.sub-menu-discover > li {
+.sub-menu-discover > li,
+.sub-menu-upload > li {
   margin-top: 30px;
 }
 .selected {
@@ -130,27 +131,63 @@ li {
   border-top: 1px solid rgb(60, 60, 60);
   color: white;
 }
-.song-object > div:hover {
-  background-color: rgb(10, 10, 10);
-}
-.song-object > div {
+
+.song-object-style div {
   overflow: hidden;
   transform-origin: 0 0;
 }
-.song-object > div > div > img {
+
+.song-object-style img {
   transition: transform 0.3s, filter 0.3s ease-in-out;
   filter: brightness(100%);
 }
-.song-object > div:hover > div > img {
+
+.song-object-style > div > div:hover {
+  background-color: rgb(10, 10, 10);
+}
+
+.song-object-style > div > div:hover > div > img {
   transform: scale(1.1);
   filter: brightness(50%);
+}
+
+.fileInput {
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+}
+
+.fileInput + label {
+  font-size: 16px;
+  padding: 8px 20px 8px;
+  font-weight: 700;
+  line-height: 1.5;
+  background-color: rgb(21, 21, 21);
+  display: block;
+  cursor: pointer;
+  text-align: center;
+  border: 1px solid rgb(60, 60, 60);
+
+  text-align: center;
+  justify-items: center;
+  justify-content: center;
+}
+
+.fileInput:active + label,
+.fileInput + label:hover {
+  color: white;
+  background-color: black;
 }
 
 .ph-music-notes-plus,
 .ph-playlist,
 .main-menu-list > li > button > .ph-music-notes,
 .ph-magnifying-glass,
-.ph-upload-simple {
+.ph-upload-simple,
+.ph-folder {
   padding-right: 10px;
 }
 .main-menu-list,
@@ -158,6 +195,9 @@ li {
 .sub-menu-playlist,
 .sub-menu-recent-songs {
   padding: 0;
+}
+.ph-folder {
+  font-size: 20px;
 }
 
 .media-player {
@@ -183,7 +223,6 @@ li {
   color: rgb(100, 100, 100);
   border-bottom: 1px solid rgb(60, 60, 60);
   border-top: 1px solid rgb(60, 60, 60);
-
   position: sticky;
   top: 0;
   display: flex;
@@ -206,13 +245,13 @@ li {
 
 button {
   background-color: rgb(21, 21, 21);
-  border-radius: 5px;
   border-style: none;
   box-sizing: border-box;
   color: rgb(154, 154, 154);
   cursor: pointer;
   display: inline-block;
   font-size: 16px;
+  font-family: "Inter", sans-serif;
   font-weight: 700;
   line-height: 1.5;
   margin: 0;

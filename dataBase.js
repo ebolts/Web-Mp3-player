@@ -4,17 +4,22 @@ let songName;
 let songArtist;
 let indexCount = 0;
 let audioTime;
-let t;
+
 const jsmediatags = window.jsmediatags;
-const submit1 = document.querySelector("#submit1");
+const SubmitFile = document.querySelector(".Submitfile");
 const backButton = document.querySelector(".back");
 const forwardButton = document.querySelector(".forward");
 const img = document.querySelector(".testimg");
+const MPimg = document.querySelector(".song-box-img");
+const MPName = document.querySelector(".MP-name");
+const MPArtist = document.querySelector(".MP-artist");
+const PreviewTitle = document.querySelector(".song-info-title");
+const PreviewSongArt = document.querySelector(".preview-song-art");
+const PreviewArtistName = document.querySelector(".song-info-artist");
 
 const audioSong = document.querySelector("audio");
 audioSong.addEventListener("loadedmetadata", () => {
   // Display the duration of the audio file
-
   audioTime = Math.floor(audioSong.duration);
   console.log("audioTime: ", audioTime);
 });
@@ -43,6 +48,10 @@ document.querySelector(".fileInput").addEventListener("change", function () {
       const format = tag.tags.picture.format;
       songArtist = tag.tags.artist;
       songName = tag.tags.title;
+      PreviewTitle.innerHTML = songName;
+      MPName.innerHTML = songName;
+      PreviewArtistName.innerHTML = songArtist;
+      MPArtist.innerHTML = songArtist;
       console.log("songname:", songName);
       let base64String = "";
       for (let i = 0; i < data.length; i++) {
@@ -51,14 +60,14 @@ document.querySelector(".fileInput").addEventListener("change", function () {
       // Output media tags
       songDisplay = `data:${format};base64,${window.btoa(base64String)}`;
       console.log(songDisplay);
-      //document.querySelector(".testimg").style.backgroundImage = songDisplay;
+      MPimg.src = songDisplay;
+      img.src = songDisplay;
+      PreviewSongArt.src = songDisplay;
     },
     onError: function (error) {
       console.log(error);
     },
   });
-
-  //songName = songMp3.substring(-1, songMp3.length - 4);
 });
 
 const indexedDB =
@@ -121,7 +130,7 @@ request.onsuccess = function () {
   };
 };
 
-submit1.addEventListener("click", () => {
+SubmitFile.addEventListener("click", () => {
   console.log("open db on event click");
   let indexedDB =
     window.indexedDB ||
@@ -188,7 +197,6 @@ backButton.addEventListener("click", () => {
     let db = open.result;
     let tx = db.transaction("songs", "readwrite");
     let store = tx.objectStore("songs");
-    const audioSong = document.querySelector("audio");
 
     let countIndex = store.count();
     countIndex.onsuccess = function () {
@@ -197,11 +205,31 @@ backButton.addEventListener("click", () => {
 
       const IDQuery = store.get(indexCount);
       IDQuery.onsuccess = function () {
-        console.log("nameQuery", IDQuery.result.mp3data);
-        console.log("imageQuery:", IDQuery.result.image);
+        const isThereAnArtist = new Image();
+
+        isThereAnArtist.src = IDQuery.result.artistIMG;
+        isThereAnArtist.onload = function () {
+          // The image has been successfully loaded
+          img.src = IDQuery.result.artistIMG;
+        };
+        // Set a callback function to run if there was an error loading the image
+        isThereAnArtist.onerror = function () {
+          // There was an error loading the image
+          img.src = IDQuery.result.image;
+          // // call style again to display any user uploaded songs not from url
+          //img.style.backgroundImage = IDQuery.result.image;
+        };
+
         audioSong.src = `${IDQuery.result.mp3data}`;
-        img.src = IDQuery.result.image;
-        console.log(indexCount);
+
+        PreviewSongArt.src = IDQuery.result.image;
+        PreviewTitle.innerHTML = IDQuery.result.name;
+        PreviewArtistName.innerHTML = IDQuery.result.artist;
+
+        MPimg.src = IDQuery.result.image;
+
+        MPName.innerHTML = IDQuery.result.name;
+        MPArtist.innerHTML = IDQuery.result.artist;
       };
     };
 
@@ -240,11 +268,31 @@ forwardButton.addEventListener("click", () => {
 
       const IDQuery = store.get(indexCount);
       IDQuery.onsuccess = function () {
-        console.log("nameQuery", IDQuery.result.mp3data);
-        console.log("imageQuery:", IDQuery.result.image);
+        const isThereAnArtist = new Image();
+
+        isThereAnArtist.src = IDQuery.result.artistIMG;
+        isThereAnArtist.onload = function () {
+          // The image has been successfully loaded
+          img.src = IDQuery.result.artistIMG;
+        };
+        // Set a callback function to run if there was an error loading the image
+        isThereAnArtist.onerror = function () {
+          // There was an error loading the image
+          img.src = IDQuery.result.image;
+          // // call style again to display any user uploaded songs not from url
+          //img.style.backgroundImage = IDQuery.result.image;
+        };
+
         audioSong.src = `${IDQuery.result.mp3data}`;
-        img.src = IDQuery.result.image;
-        console.log(indexCount);
+
+        PreviewSongArt.src = IDQuery.result.image;
+        PreviewTitle.innerHTML = IDQuery.result.name;
+        PreviewArtistName.innerHTML = IDQuery.result.artist;
+
+        MPimg.src = IDQuery.result.image;
+
+        MPName.innerHTML = IDQuery.result.name;
+        MPArtist.innerHTML = IDQuery.result.artist;
       };
     };
 

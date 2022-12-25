@@ -59,12 +59,7 @@
               <h2 class="song-info-artist"></h2>
             </div>
             <div class="preHalfImage">
-              <img
-                src=""
-                alt=""
-                class="preview-song-art"
-                style="display: none"
-              />
+              <img src="" alt="" class="preview-song-art" />
             </div>
           </div>
           <div class="gradient-container">
@@ -123,8 +118,14 @@
           </form>
         </div>
         <div class="sub-menu-upload">
-          <input type="file" class="fileInput" accept=".mp3" />
-          <button type="submit" id="submit1">submit1</button>
+          <input type="file" id="file" class="fileInput" accept=".mp3" />
+
+          <label for="file"><i class="ph-folder"></i>Choose a file...</label>
+          <li>
+            <button type="submit" class="Submitfile">
+              <i class="ph-upload-simple"></i>Submit
+            </button>
+          </li>
         </div>
       </div>
       <div class="listMenu">
@@ -136,14 +137,18 @@
             <i class="ph-clock" style="width: 300px"></i>
             <i class="ph-list-plus" style="width: 300px"></i>
           </div>
-          <h3 class="artistTracks" style="display: none">
-            Artists' Top Tracks
+          <h3 class="artistTracks" style="display: none; padding-left: 20px">
+            Artist's Top Tracks
           </h3>
-          <div class="song-object"></div>
-          <h3 class="songsWithName" style="display: none">
-            Songs with that Name
+          <div class="song-object-style">
+            <div class="artistTopTracks"></div>
+          </div>
+          <h3 class="songsWithName" style="display: none; padding-left: 20px">
+            Songs With Name
           </h3>
-          <div class="song-object1"></div>
+          <div class="song-object-style">
+            <div class="songsWithName"></div>
+          </div>
         </div>
       </div>
     </div>
