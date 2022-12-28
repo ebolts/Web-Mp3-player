@@ -13,6 +13,8 @@ const playButton = document.querySelector(".start"),
   upload = document.querySelector(".upload"),
   topTracks = document.querySelector(".topTracks");
 
+const backButton = document.querySelector(".back");
+const forwardButton = document.querySelector(".forward");
 const img = document.querySelector(".testimg");
 const MPimg = document.querySelector(".song-box-img");
 const MPName = document.querySelector(".MP-name");
@@ -20,18 +22,14 @@ const MPArtist = document.querySelector(".MP-artist");
 const PreviewTitle = document.querySelector(".song-info-title");
 const PreviewArtistName = document.querySelector(".song-info-artist");
 const PreviewSongArt = document.querySelector(".preview-song-art");
+const MainMenuList = document.querySelector(".main-menu-list");
+const SubMenuDiscover = document.querySelector(".sub-menu-discover");
+const SubMenuPlaylist = document.querySelector(".sub-menu-playlist");
 
 let deleteSongsCount = 0;
 let songs;
 let titleState;
 recentplayed.addEventListener("click", () => {
-  document.querySelector(".sub-menu-playlist").style.display = "none";
-  document.querySelector(".sub-menu-discover").style.display = "none";
-  document.querySelector(".sub-menu-search").style.display = "none";
-  document.querySelector(".sub-menu-upload").style.display = "none";
-  document.querySelector(".sub-menu-recent-songs").style.display = "block";
-  document.querySelector(".songsWithName").style.display = "none";
-  document.querySelector(".artistTracks").style.display = "none";
   requestLocal();
 });
 
@@ -43,7 +41,7 @@ playlist.addEventListener("click", () => {
   document.querySelector(".sub-menu-upload").style.display = "none";
   document.querySelector(".table-title").innerHTML = "Playlist";
 
-  document.querySelector(".songsWithName").style.display = "none";
+  document.querySelector(".songsWithNameTitle").style.display = "none";
   document.querySelector(".artistTracks").style.display = "none";
   ArtistTopTracks.innerHTML = " ";
   SongsWithName.innerHTML = " ";
@@ -57,7 +55,7 @@ discoverSongs.addEventListener("click", () => {
   document.querySelector(".sub-menu-upload").style.display = "none";
   document.querySelector(".table-title").innerHTML = "Discover";
 
-  document.querySelector(".songsWithName").style.display = "none";
+  document.querySelector(".songsWithNameTitle").style.display = "none";
   document.querySelector(".artistTracks").style.display = "none";
   titleState = false;
   SongsWithName.innerHTML = " ";
@@ -73,7 +71,7 @@ searchbtn.addEventListener("click", () => {
   document.querySelector(".table-title").innerHTML = "Search";
   ArtistTopTracks.innerHTML = " ";
   SongsWithName.innerHTML = " ";
-  document.querySelector(".songsWithName").style.display = "none";
+  document.querySelector(".songsWithNameTitle").style.display = "none";
   document.querySelector(".artistTracks").style.display = "none";
 
   const form = document.querySelector("#searchForm");
@@ -93,6 +91,45 @@ upload.addEventListener("click", () => {
   document.querySelector(".table-title").innerHTML = "Upload";
   ArtistTopTracks.innerHTML = " ";
   SongsWithName.innerHTML = " ";
+});
+document.querySelector(".recently-played").classList.add("selectedBtn");
+
+MainMenuList.addEventListener("click", (event) => {
+  const MainMenuSelectedBtn = MainMenuList.querySelectorAll(".selectedBtn");
+
+  if (MainMenuSelectedBtn.length && event.target.tagName === "BUTTON") {
+    MainMenuSelectedBtn[0].classList.remove("selectedBtn");
+  }
+
+  if (["BUTTON"].includes(event.target.tagName)) {
+    event.target.classList.add("selectedBtn");
+  }
+});
+
+SubMenuDiscover.addEventListener("click", (event) => {
+  const SubMenuDiscoverSelectedBtn =
+    SubMenuDiscover.querySelectorAll(".selectedBtn");
+
+  if (SubMenuDiscoverSelectedBtn.length && event.target.tagName === "BUTTON") {
+    SubMenuDiscoverSelectedBtn[0].classList.remove("selectedBtn");
+  }
+
+  if (["BUTTON"].includes(event.target.tagName)) {
+    event.target.classList.add("selectedBtn");
+  }
+});
+
+SubMenuPlaylist.addEventListener("click", (event) => {
+  const SubMenuPlaylistSelectedBtn =
+    SubMenuPlaylist.querySelectorAll(".selectedBtn");
+
+  if (SubMenuPlaylistSelectedBtn.length && event.target.tagName === "BUTTON") {
+    SubMenuPlaylistSelectedBtn[0].classList.remove("selectedBtn");
+  }
+
+  if (["BUTTON"].includes(event.target.tagName)) {
+    event.target.classList.add("selectedBtn");
+  }
 });
 
 function isAudioPLaying() {
@@ -221,15 +258,25 @@ function playAudio() {
   playButton.querySelector("i").classList.remove("ph-play");
   playButton.querySelector("i").classList.add("ph-pause");
   audioSong.play();
+  playButton.classList.add("selectedBtn");
 }
+
 function pauseAudio() {
   musicPlayer.classList.remove("playing");
   playButton.querySelector("i").classList.remove("ph-pause");
   playButton.querySelector("i").classList.add("ph-play");
   audioSong.pause();
+  playButton.classList.remove("selectedBtn");
 }
 
 function requestLocal() {
+  document.querySelector(".sub-menu-playlist").style.display = "none";
+  document.querySelector(".sub-menu-discover").style.display = "none";
+  document.querySelector(".sub-menu-search").style.display = "none";
+  document.querySelector(".sub-menu-upload").style.display = "none";
+  document.querySelector(".sub-menu-recent-songs").style.display = "block";
+  document.querySelector(".songsWithNameTitle").style.display = "none";
+  document.querySelector(".artistTracks").style.display = "none";
   console.log("open db on event click");
   document.querySelector(".table-title").innerHTML = "Recently Added";
 
@@ -298,15 +345,6 @@ function requestLocal() {
 
         let { minusbtn, songdiv } = context.collect();
 
-        document.addEventListener("click", function (event) {
-          songdiv.classList.add("selected");
-
-          // checks if the div element is click
-          // in this case it shouldn't be (e.g clicked on another div) so remove background
-          if (!songdiv.contains(event.target)) {
-            songdiv.classList.remove("selected");
-          }
-        });
         minusbtn.addEventListener("click", () => {
           console.log("open db on event click");
           let indexedDB =
@@ -346,8 +384,21 @@ function requestLocal() {
           };
         });
 
-        songdiv.addEventListener("click", () => {
-          console.log("open db on event click");
+        songdiv.addEventListener("click", (event) => {
+          // Get all elements with the "selected" class
+          const selectedElements =
+            ArtistTopTracks.querySelectorAll(".selected");
+
+          // Check if there are any selected elements
+          if (selectedElements.length) {
+            // If there are, remove the "selected" class from the first one
+            selectedElements[0].classList.remove("selected");
+          }
+          // check if tag is one the three, if so add selected class
+          if (["IMG", "DIV", "H5"].includes(event.target.tagName)) {
+            songdiv.classList.add("selected");
+          }
+
           let indexedDB =
             window.indexedDB ||
             window.mozIndexedDB ||
@@ -543,8 +594,8 @@ function generalLoadSearchAPI(songs) {
 }
 
 function loadSearchSongsFromAPI(songs) {
-  SongsWithName.innerHTML = " ";
   let songElement;
+  SongsWithName.innerHTML = " ";
 
   const DisplayArrayOfSongs = songs.map((song) => {
     console.log("song: ", song);
@@ -559,7 +610,7 @@ function loadSearchSongsFromAPI(songs) {
     }" ref="songdiv" style="display: flex; text-align: left; align-items:center; max-height: 152px; 
       margin: 15px 0px 15px 0px; 
         " > 
-        <div style="display: flex; align-items: left; justify-content: left;  width:300px; max-height: 152px; height: 100%;padding-left: 20px; "> 
+        <div style="display: flex; align-items: left; justify-content: left;  width:300px; max-height: 152px; height: 100%;padding-left: 20px;"> 
           <img class="image" src=${trackArt} style=" width: 50%; height: auto;" >
         </div>
         
@@ -663,15 +714,9 @@ function loadSearchSongsFromAPI(songs) {
     return songElement;
   });
   if (DisplayArrayOfSongs.length > 0) {
-    document.querySelector(".songsWithName").style.display = "block";
+    console.log("test");
+    document.querySelector(".songsWithNameTitle").style.display = "block";
   }
-}
-
-function perviousSong() {
-  isAudioPLaying() ? playAudio() : pauseAudio();
-}
-function nextSong() {
-  isAudioPLaying() ? playAudio() : pauseAudio();
 }
 
 requestLocal();
@@ -679,6 +724,13 @@ requestLocal();
 playButton.addEventListener("click", () => {
   isAudioPLaying() ? pauseAudio() : playAudio(); // is audio play true? then pause else play
 });
+forwardButton.addEventListener("click", () => {
+  pauseAudio();
+});
+backButton.addEventListener("click", () => {
+  pauseAudio();
+});
+
 function secondsToMinutes(seconds) {
   let minutes = Math.floor(seconds / 60);
   let remainingSeconds = seconds % 60;

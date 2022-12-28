@@ -16,6 +16,7 @@ const MPArtist = document.querySelector(".MP-artist");
 const PreviewTitle = document.querySelector(".song-info-title");
 const PreviewSongArt = document.querySelector(".preview-song-art");
 const PreviewArtistName = document.querySelector(".song-info-artist");
+const Submitfile = document.querySelector(".Submitfile");
 
 const audioSong = document.querySelector("audio");
 audioSong.addEventListener("loadedmetadata", () => {
@@ -52,6 +53,7 @@ document.querySelector(".fileInput").addEventListener("change", function () {
       MPName.innerHTML = songName;
       PreviewArtistName.innerHTML = songArtist;
       MPArtist.innerHTML = songArtist;
+      Submitfile.innerHTML = `Submit: ${songName}`;
       console.log("songname:", songName);
       let base64String = "";
       for (let i = 0; i < data.length; i++) {
@@ -205,6 +207,7 @@ backButton.addEventListener("click", () => {
 
       const IDQuery = store.get(indexCount);
       IDQuery.onsuccess = function () {
+        console.log("IDQuery.result:", IDQuery.result);
         const isThereAnArtist = new Image();
 
         isThereAnArtist.src = IDQuery.result.artistIMG;
@@ -268,6 +271,7 @@ forwardButton.addEventListener("click", () => {
 
       const IDQuery = store.get(indexCount);
       IDQuery.onsuccess = function () {
+        console.log("IDQuery.result:", IDQuery.result);
         const isThereAnArtist = new Image();
 
         isThereAnArtist.src = IDQuery.result.artistIMG;
