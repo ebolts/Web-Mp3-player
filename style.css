@@ -166,7 +166,7 @@ li {
 
 .fileInput + label {
   font-size: 16px;
-  padding: 8px 20px 8px;
+  padding: 7px 20px 7px;
   font-weight: 700;
   line-height: 1.5;
   background-color: rgb(21, 21, 21);
@@ -184,6 +184,7 @@ li {
 .fileInput + label:hover {
   color: white;
   background-color: black;
+  border: 1px solid rgb(133, 133, 133);
 }
 
 .ph-music-notes-plus,
@@ -278,6 +279,11 @@ button:hover {
   color: white;
   background-color: rgb(10, 10, 10);
 }
+.start,
+.forward,
+.back {
+  text-align: center;
+}
 
 /*Drop down Menu */
 
@@ -350,3 +356,56 @@ button:hover {
   color: #fff;
 }
 */
+
+#textInput {
+  border: 1px solid rgb(60, 60, 60);
+  padding: 10px 10px;
+
+  background-color: rgb(21, 21, 21);
+  font-size: 16px;
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  outline: none;
+  color: rgb(154, 154, 154);
+  margin-bottom: 10px;
+  margin-right: 10px;
+  margin-left: 10px;
+  display: block;
+  width: 90%;
+}
+#textInput:focus {
+  color: white;
+  background-color: black;
+  border: 1px solid rgb(133, 133, 133);
+}
+.searchBtn {
+  background-color: rgb(21, 21, 21);
+  border-style: none;
+  margin-top: 22px;
+  box-sizing: border-box;
+  color: rgb(154, 154, 154);
+  cursor: pointer;
+  display: inline-block;
+  font-size: 16px;
+  font-family: "Inter", sans-serif;
+  font-weight: 700;
+  line-height: 1.5;
+
+  max-width: none;
+  min-height: 44px;
+  min-width: 10px;
+  outline: none;
+  overflow: hidden;
+  padding: 9px 20px 8px;
+  position: relative;
+  text-align: left;
+  width: 100%;
+  text-transform: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+.searchBtn:hover {
+  color: white;
+  background-color: rgb(10, 10, 10);
+}

@@ -724,6 +724,8 @@ requestLocal();
 playButton.addEventListener("click", () => {
   isAudioPLaying() ? pauseAudio() : playAudio(); // is audio play true? then pause else play
 });
+const audioElement = document.querySelector("audio");
+audioElement.addEventListener("ended", pauseAudio);
 forwardButton.addEventListener("click", () => {
   pauseAudio();
 });
