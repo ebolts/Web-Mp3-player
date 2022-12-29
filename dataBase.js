@@ -22,7 +22,6 @@ const audioSong = document.querySelector("audio");
 audioSong.addEventListener("loadedmetadata", () => {
   // Display the duration of the audio file
   audioTime = Math.floor(audioSong.duration);
-  console.log("audioTime: ", audioTime);
 });
 
 document.querySelector(".fileInput").addEventListener("change", function () {

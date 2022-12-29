@@ -724,7 +724,31 @@ requestLocal();
 playButton.addEventListener("click", () => {
   isAudioPLaying() ? pauseAudio() : playAudio(); // is audio play true? then pause else play
 });
+
 const audioElement = document.querySelector("audio");
+audioElement.volume = 0.5;
+const musicBar = document.querySelector(".musicBar");
+const volume = document.querySelector(".volume");
+const progressBar = document.querySelector(".progress");
+const volumeProgressBar = document.querySelector(".volumeProgress");
+const endTime = document.querySelector(".endTime");
+const startTime = document.querySelector(".startTime");
+const muteBtn = document.querySelector(".mute");
+
+muteBtn.addEventListener("click", () => {
+  const icon = muteBtn.querySelector("i");
+
+  if (icon.classList.contains("ph-speaker-slash")) {
+    audioElement.muted = false;
+    icon.classList.remove("ph-speaker-slash");
+    icon.classList.add("ph-speaker-high");
+  } else {
+    audioElement.muted = true;
+    icon.classList.remove("ph-speaker-high");
+    icon.classList.add("ph-speaker-slash");
+  }
+});
+
 audioElement.addEventListener("ended", pauseAudio);
 forwardButton.addEventListener("click", () => {
   pauseAudio();
@@ -732,10 +756,44 @@ forwardButton.addEventListener("click", () => {
 backButton.addEventListener("click", () => {
   pauseAudio();
 });
+audioElement.addEventListener("timeupdate", function () {
+  musicBar.value = audioElement.currentTime;
+  startTime.innerHTML = secondsToMinutes(audioElement.currentTime);
+
+  progressBar.value = audioElement.currentTime;
+});
+
+audioElement.addEventListener("loadedmetadata", function () {
+  musicBar.max = audioElement.duration;
+  endTime.innerHTML = secondsToMinutes(audioElement.duration);
+  progressBar.max = audioElement.duration;
+});
+
+volume.addEventListener("input", function () {
+  audioElement.volume = this.value;
+  volumeProgressBar.value = this.value;
+
+  if (this.value < 0.01) {
+    muteBtn.querySelector("i").classList.add("ph-speaker-slash");
+    muteBtn.querySelector("i").classList.remove("ph-speaker-high");
+  } else {
+    muteBtn.querySelector("i").classList.remove("ph-speaker-slash");
+    muteBtn.querySelector("i").classList.add("ph-speaker-high");
+  }
+});
+
+musicBar.addEventListener("input", function () {
+  audioElement.currentTime = this.value;
+
+  startTime.innerHTML = secondsToMinutes(this.value);
+});
+progressBar.addEventListener("input", function () {
+  console.log("progressBar.value:", progressBar.value);
+});
 
 function secondsToMinutes(seconds) {
   let minutes = Math.floor(seconds / 60);
-  let remainingSeconds = seconds % 60;
+  let remainingSeconds = Math.floor(seconds % 60);
   // Add a leading zero to the seconds
   if (remainingSeconds < 10) {
     remainingSeconds = "0" + remainingSeconds;
