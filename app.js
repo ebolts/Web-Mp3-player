@@ -313,10 +313,10 @@ function requestLocal() {
 
         let context = f`<div class="song-id-${
           song.id
-        }" ref="songdiv" style="display: flex; text-align: left; align-items:center; max-height: 152px; 
+        }" ref="songdiv" style="display: flex; text-align: left; align-items:center; justify-content: space-between; max-height: 152px; 
           margin: 15px 0px 15px 0px; 
             " > 
-            <div style="display: flex; align-items: left; justify-content: left;  width:300px; max-height: 152px; height: 100%;padding-left: 20px; "> 
+            <div style="display: flex; align-items: left; justify-content: left;  width:200px; max-height: 152px; height: 100%;padding-left: 20px; "> 
               <img class="image" src=${
                 song.image
               } style=" width: 50%; height: auto;  object-fit: cover;  background-size: cover; background-image:${
@@ -324,19 +324,19 @@ function requestLocal() {
         }" >
             </div>
             
-            <div style="text-align: left; width:300px; padding-right: 10px"> 
+            <div style="text-align: left; width:200px; padding-right: 10px"> 
               <h5 class="card-title " >${song.name}</h5>
             </div>
     
-            <div style="text-align: left; width:300px; padding-right: 10px"> 
+            <div style="text-align: left; width:200px; padding-right: 10px"> 
               <h5 class="card-title " >${song.artist}</h5>
             </div>
     
-            <div style="text-align: left; width:300px; padding-right: 10px"> 
+            <div style="text-align: left; width:200px; padding-right: 10px"> 
               <h5 class="card-title" >${secondsToMinutes(seconds)}</h5>
             </div>
     
-            <div style="text-align: left; width:300px; "> 
+            <div style="text-align: left; width:200px; "> 
               <i class="ph-minus" ref="minusbtn"></i>
               
             </div>
@@ -484,26 +484,26 @@ function generalLoadSearchAPI(songs) {
 
     let context = f`<div class="song-id-${
       song.id
-    }" ref="songdiv" style="display: flex; text-align: left; align-items:center; max-height: 152px; 
+    }" ref="songdiv" style="display: flex; text-align: left; align-items:center; justify-content: space-between; max-height: 152px; 
       margin: 15px 0px 15px 0px; 
         " > 
-        <div style="display: flex; align-items: left; justify-content: left;  width:300px; max-height: 152px; height: 100%; padding-left: 20px; "> 
+        <div style="display: flex; align-items: left; justify-content: left;  width:200px; max-height: 152px; height: 100%; padding-left: 20px; "> 
           <img class="image" src=${trackArt} style=" width: 50%; height: auto;" >
         </div>
         
-        <div style="text-align: left; width:300px; padding-right: 10px"> 
+        <div style="text-align: left; width:200px; padding-right: 10px"> 
           <h5 class="card-title " >${song.name}</h5>
         </div>
 
-        <div style="text-align: left; width:300px; padding-right: 10px"> 
+        <div style="text-align: left; width:200px; padding-right: 10px"> 
           <h5 class="card-title " >${song.artistName}</h5>
         </div>
 
-        <div style="text-align: left; width:300px; padding-right: 10px"> 
+        <div style="text-align: left; width:200px; padding-right: 10px"> 
           <h5 class="card-title" >${secondsToMinutes(seconds)}</h5>
         </div>
 
-        <div style="text-align: left; width:300px; "> 
+        <div style="text-align: left; width:200px; "> 
           <i class="ph-plus" ref="plusbtn"></i>
           
         </div>
@@ -607,26 +607,26 @@ function loadSearchSongsFromAPI(songs) {
 
     let context = f`<div class="song-id-${
       song.id
-    }" ref="songdiv" style="display: flex; text-align: left; align-items:center; max-height: 152px; 
+    }" ref="songdiv" style="display: flex; text-align: left; align-items:center; justify-content: space-between; max-height: 152px; 
       margin: 15px 0px 15px 0px; 
         " > 
-        <div style="display: flex; align-items: left; justify-content: left;  width:300px; max-height: 152px; height: 100%;padding-left: 20px;"> 
+        <div style="display: flex; align-items: left; justify-content: left;  width:200px; max-height: 152px; height: 100%;padding-left: 20px;"> 
           <img class="image" src=${trackArt} style=" width: 50%; height: auto;" >
         </div>
         
-        <div style="text-align: left; width:300px; padding-right: 10px"> 
+        <div style="text-align: left; width:200px; padding-right: 10px"> 
           <h5 class="card-title " >${song.name}</h5>
         </div>
 
-        <div style="text-align: left; width:300px; padding-right: 10px"> 
+        <div style="text-align: left; width:200px; padding-right: 10px"> 
           <h5 class="card-title " >${song.artistName}</h5>
         </div>
 
-        <div style="text-align: left; width:300px; padding-right: 10px"> 
+        <div style="text-align: left; width:200px; padding-right: 10px"> 
           <h5 class="card-title" >${secondsToMinutes(seconds)}</h5>
         </div>
 
-        <div style="text-align: left; width:300px; "> 
+        <div style="text-align: left; width:200px; "> 
           <i class="ph-plus" ref="plusbtn"></i>
           
         </div>
