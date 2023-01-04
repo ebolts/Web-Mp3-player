@@ -226,20 +226,34 @@ li {
 
 .song-info-small {
   display: flex;
-
   max-height: 40px;
-  max-width: 500px;
+  width: 20%;
+  justify-content: space-around;
 }
 .MP-name {
   color: white;
   font-size: 16px;
   margin: 0px;
   padding-right: 10px;
+  padding-left: 10px;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
+
 .MP-artist {
   font-weight: 400;
   font-size: 16px;
   margin: 0px;
+  padding-right: 10px;
+  padding-left: 10px;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .table-header {
@@ -267,9 +281,11 @@ i {
   margin: 0px;
   padding-left: 20px;
 }
-.ph-plus,
-.ph-minus {
+.ph-plus:hover,
+.ph-minus:hover {
   cursor: pointer;
+  color: white;
+  -webkit-transition: 0.2s;
 }
 
 button {
