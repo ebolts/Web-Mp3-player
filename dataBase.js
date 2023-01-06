@@ -1,9 +1,11 @@
+
 let songMp3;
 let songDisplay;
 let songName;
 let songArtist;
 let indexCount = 0;
 let audioTime;
+
 
 const jsmediatags = window.jsmediatags;
 const SubmitFile = document.querySelector(".Submitfile");
@@ -178,129 +180,5 @@ SubmitFile.addEventListener("click", () => {
   };
 });
 
-backButton.addEventListener("click", () => {
-  console.log("open db on event click");
-  let indexedDB =
-    window.indexedDB ||
-    window.mozIndexedDB ||
-    window.webkitIndexedDB ||
-    window.msIndexedDB;
 
-  let open = indexedDB.open("SongsDatabase", 1);
 
-  open.onupgradeneeded = function () {
-    let db = open.result;
-    const store = db.createObjectStore("songs", { keyPath: "id" });
-    store.createIndex("song_name", ["name"], { unique: false });
-  };
-
-  open.onsuccess = function () {
-    let db = open.result;
-    let tx = db.transaction("songs", "readwrite");
-    let store = tx.objectStore("songs");
-
-    let countIndex = store.count();
-    countIndex.onsuccess = function () {
-      indexCount == 1 ? null : indexCount--;
-      console.log("test");
-
-      const IDQuery = store.get(indexCount);
-      IDQuery.onsuccess = function () {
-        console.log("IDQuery.result:", IDQuery.result);
-        const isThereAnArtist = new Image();
-
-        isThereAnArtist.src = IDQuery.result.artistIMG;
-        isThereAnArtist.onload = function () {
-          // The image has been successfully loaded
-          img.src = IDQuery.result.artistIMG;
-        };
-        // Set a callback function to run if there was an error loading the image
-        isThereAnArtist.onerror = function () {
-          // There was an error loading the image
-          img.src = IDQuery.result.image;
-          // // call style again to display any user uploaded songs not from url
-          //img.style.backgroundImage = IDQuery.result.image;
-        };
-
-        audioSong.src = `${IDQuery.result.mp3data}`;
-
-        PreviewSongArt.src = IDQuery.result.image;
-        PreviewTitle.innerHTML = IDQuery.result.name;
-        PreviewArtistName.innerHTML = IDQuery.result.artist;
-
-        MPimg.src = IDQuery.result.image;
-
-        MPName.innerHTML = IDQuery.result.name;
-        MPArtist.innerHTML = IDQuery.result.artist;
-      };
-    };
-
-    tx.oncomplete = function () {
-      db.close();
-    };
-  };
-});
-
-forwardButton.addEventListener("click", () => {
-  console.log("open db on event click");
-  let indexedDB =
-    window.indexedDB ||
-    window.mozIndexedDB ||
-    window.webkitIndexedDB ||
-    window.msIndexedDB;
-
-  let open = indexedDB.open("SongsDatabase", 1);
-
-  open.onupgradeneeded = function () {
-    let db = open.result;
-    const store = db.createObjectStore("songs", { keyPath: "id" });
-    store.createIndex("song_name", ["name"], { unique: false });
-  };
-
-  open.onsuccess = function () {
-    let db = open.result;
-    let tx = db.transaction("songs", "readwrite");
-    let store = tx.objectStore("songs");
-    const audioSong = document.querySelector("audio");
-
-    let countIndex = store.count();
-    countIndex.onsuccess = function () {
-      indexCount == countIndex.result ? null : indexCount++;
-      console.log("test");
-
-      const IDQuery = store.get(indexCount);
-      IDQuery.onsuccess = function () {
-        console.log("IDQuery.result:", IDQuery.result);
-        const isThereAnArtist = new Image();
-
-        isThereAnArtist.src = IDQuery.result.artistIMG;
-        isThereAnArtist.onload = function () {
-          // The image has been successfully loaded
-          img.src = IDQuery.result.artistIMG;
-        };
-        // Set a callback function to run if there was an error loading the image
-        isThereAnArtist.onerror = function () {
-          // There was an error loading the image
-          img.src = IDQuery.result.image;
-          // // call style again to display any user uploaded songs not from url
-          //img.style.backgroundImage = IDQuery.result.image;
-        };
-
-        audioSong.src = `${IDQuery.result.mp3data}`;
-
-        PreviewSongArt.src = IDQuery.result.image;
-        PreviewTitle.innerHTML = IDQuery.result.name;
-        PreviewArtistName.innerHTML = IDQuery.result.artist;
-
-        MPimg.src = IDQuery.result.image;
-
-        MPName.innerHTML = IDQuery.result.name;
-        MPArtist.innerHTML = IDQuery.result.artist;
-      };
-    };
-
-    tx.oncomplete = function () {
-      db.close();
-    };
-  };
-});

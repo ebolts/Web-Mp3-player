@@ -29,6 +29,8 @@ const SubMenuPlaylist = document.querySelector(".sub-menu-playlist");
 let deleteSongsCount = 0;
 let songs;
 let titleState;
+let countIndex
+export let songID = 0
 recentplayed.addEventListener("click", () => {
   requestLocal();
 });
@@ -436,9 +438,13 @@ function requestLocal() {
                 // // call style again to display any user uploaded songs not from url
                 //img.style.backgroundImage = IDQuery.result.image;
               };
-              console.log("IDQuery.result.mp3data: ", IDQuery.result.mp3data);
+              
               console.log("IDQuery.result.time", IDQuery.result.time);
-
+              
+              songID = IDQuery.result.id
+              countIndex = songID 
+              console.log("songID", songID);
+              
               audioSong.src = `${IDQuery.result.mp3data}`;
               PreviewSongArt.src = IDQuery.result.image;
               PreviewTitle.innerHTML = IDQuery.result.name;
@@ -811,4 +817,159 @@ christmasTracks.addEventListener("click", () => {
 const rapHipHopTracks = document.querySelector(".rapHipHopTracks");
 rapHipHopTracks.addEventListener("click", () => {
   retrieveRapHipHopTracks();
+});
+
+
+forwardButton.addEventListener("click", () => {
+  console.log("open db on event click");
+  
+  let indexedDB =
+    window.indexedDB ||
+    window.mozIndexedDB ||
+    window.webkitIndexedDB ||
+    window.msIndexedDB;
+
+  let open = indexedDB.open("SongsDatabase", 1);
+
+  open.onupgradeneeded = function () {
+    let db = open.result;
+    const store = db.createObjectStore("songs", { keyPath: "id" });
+    store.createIndex("song_name", ["name"], { unique: false });
+    
+  };
+  
+  open.onsuccess = function () {
+    
+    let db = open.result;
+    let tx = db.transaction("songs", "readwrite");
+    let store = tx.objectStore("songs");
+    const audioSong = document.querySelector("audio");
+
+
+    
+    let keyArray = store.getAllKeys()
+    
+    
+   
+    
+      keyArray.onsuccess = function () {
+        console.log("keyArray.result[indexCount]", keyArray.result.length)
+        console.log("songID",songID);
+        console.log("countIndex",countIndex);
+        countIndex == 0  || countIndex < keyArray.result.length? countIndex++ :null ;
+        
+        console.log("countIndex",countIndex);
+      const IDQuery = store.get(keyArray.result[countIndex-1]);
+      IDQuery.onsuccess = function () {
+        console.log("IDQuery.result:", IDQuery.result);
+        const isThereAnArtist = new Image();
+
+        isThereAnArtist.src = IDQuery.result.artistIMG;
+        isThereAnArtist.onload = function () {
+          // The image has been successfully loaded
+          img.src = IDQuery.result.artistIMG;
+        };
+        // Set a callback function to run if there was an error loading the image
+        isThereAnArtist.onerror = function () {
+          // There was an error loading the image
+          img.src = IDQuery.result.image;
+          // // call style again to display any user uploaded songs not from url
+          //img.style.backgroundImage = IDQuery.result.image;
+        };
+
+        audioSong.src = `${IDQuery.result.mp3data}`;
+
+        PreviewSongArt.src = IDQuery.result.image;
+        PreviewTitle.innerHTML = IDQuery.result.name;
+        PreviewArtistName.innerHTML = IDQuery.result.artist;
+
+        MPimg.src = IDQuery.result.image;
+
+        MPName.innerHTML = IDQuery.result.name;
+        MPArtist.innerHTML = IDQuery.result.artist;
+      };
+     
+    };
+
+    tx.oncomplete = function () {
+      db.close();
+    };
+  };
+});
+
+
+
+backButton.addEventListener("click", () => {
+  console.log("open db on event click");
+  let indexedDB =
+    window.indexedDB ||
+    window.mozIndexedDB ||
+    window.webkitIndexedDB ||
+    window.msIndexedDB;
+
+  let open = indexedDB.open("SongsDatabase", 1);
+
+  open.onupgradeneeded = function () {
+    let db = open.result;
+    const store = db.createObjectStore("songs", { keyPath: "id" });
+    store.createIndex("song_name", ["name"], { unique: false });
+    
+  };
+  
+  open.onsuccess = function () {
+    
+    let db = open.result;
+    let tx = db.transaction("songs", "readwrite");
+    let store = tx.objectStore("songs");
+    const audioSong = document.querySelector("audio");
+
+
+    
+    let keyArray = store.getAllKeys()
+    
+   
+    
+      keyArray.onsuccess = function () {
+        console.log("keyArray.result.length ", keyArray.result )
+        console.log("indexCount", countIndex)
+        console.log(countIndex > 0  )
+        countIndex > 1  ? countIndex-- :null ;
+        
+       
+      const IDQuery = store.get(keyArray.result[countIndex-1]);
+      IDQuery.onsuccess = function () {
+        console.log("IDQuery.result:", IDQuery.result);
+        const isThereAnArtist = new Image();
+
+        isThereAnArtist.src = IDQuery.result.artistIMG;
+        isThereAnArtist.onload = function () {
+          // The image has been successfully loaded
+          img.src = IDQuery.result.artistIMG;
+        };
+        // Set a callback function to run if there was an error loading the image
+        isThereAnArtist.onerror = function () {
+          // There was an error loading the image
+          img.src = IDQuery.result.image;
+          // // call style again to display any user uploaded songs not from url
+          //img.style.backgroundImage = IDQuery.result.image;
+        };
+
+        audioSong.src = `${IDQuery.result.mp3data}`;
+
+        PreviewSongArt.src = IDQuery.result.image;
+        PreviewTitle.innerHTML = IDQuery.result.name;
+        PreviewArtistName.innerHTML = IDQuery.result.artist;
+
+        MPimg.src = IDQuery.result.image;
+
+        MPName.innerHTML = IDQuery.result.name;
+        MPArtist.innerHTML = IDQuery.result.artist;
+      };
+     
+    };
+
+    tx.oncomplete = function () {
+      db.close();
+    };
+  };
 });
