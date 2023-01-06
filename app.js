@@ -29,8 +29,8 @@ const SubMenuPlaylist = document.querySelector(".sub-menu-playlist");
 let deleteSongsCount = 0;
 let songs;
 let titleState;
-let countIndex
-export let songID = 0
+let songID
+
 recentplayed.addEventListener("click", () => {
   requestLocal();
 });
@@ -442,7 +442,7 @@ function requestLocal() {
               console.log("IDQuery.result.time", IDQuery.result.time);
               
               songID = IDQuery.result.id
-              countIndex = songID 
+              
               console.log("songID", songID);
               
               audioSong.src = `${IDQuery.result.mp3data}`;
@@ -545,13 +545,13 @@ function generalLoadSearchAPI(songs) {
         let db = open.result;
         let tx = db.transaction("songs", "readwrite");
         let store = tx.objectStore("songs");
-        let countIndex = store.count();
+        let songID = store.count();
 
-        countIndex.onsuccess = function () {
-          console.log("countIndex", countIndex.result);
-          console.log("song id:", countIndex.result + 1 + deleteSongsCount);
+        songID.onsuccess = function () {
+          console.log("songID", songID.result);
+          console.log("song id:", songID.result + 1 + deleteSongsCount);
           store.put({
-            id: countIndex.result + 1 + deleteSongsCount,
+            id: songID.result + 1 + deleteSongsCount,
             name: song.name,
             artist: song.artistName,
             artistIMG: artistIMG,
@@ -668,13 +668,13 @@ function loadSearchSongsFromAPI(songs) {
         let db = open.result;
         let tx = db.transaction("songs", "readwrite");
         let store = tx.objectStore("songs");
-        let countIndex = store.count();
+        let songID = store.count();
 
-        countIndex.onsuccess = function () {
-          //console.log("countIndex", countIndex.result);
-          //console.log("song id:", countIndex.result + 1 + deleteSongsCount);
+        songID.onsuccess = function () {
+          //console.log("songID", songID.result);
+          //console.log("song id:", songID.result + 1 + deleteSongsCount);
           store.put({
-            id: countIndex.result + 1 + deleteSongsCount,
+            id: songID.result + 1 + deleteSongsCount,
             name: song.name,
             artist: song.artistName,
             artistIMG: artistIMG,
@@ -855,11 +855,11 @@ forwardButton.addEventListener("click", () => {
       keyArray.onsuccess = function () {
         console.log("keyArray.result[indexCount]", keyArray.result.length)
         console.log("songID",songID);
-        console.log("countIndex",countIndex);
-        countIndex == 0  || countIndex < keyArray.result.length? countIndex++ :null ;
+        console.log("songID",songID);
+        songID == 0  || songID < keyArray.result.length? songID++ :null ;
         
-        console.log("countIndex",countIndex);
-      const IDQuery = store.get(keyArray.result[countIndex-1]);
+        console.log("songID",songID);
+      const IDQuery = store.get(keyArray.result[songID-1]);
       IDQuery.onsuccess = function () {
         console.log("IDQuery.result:", IDQuery.result);
         const isThereAnArtist = new Image();
@@ -931,12 +931,12 @@ backButton.addEventListener("click", () => {
     
       keyArray.onsuccess = function () {
         console.log("keyArray.result.length ", keyArray.result )
-        console.log("indexCount", countIndex)
-        console.log(countIndex > 0  )
-        countIndex > 1  ? countIndex-- :null ;
+        console.log("indexCount", songID)
+        console.log(songID > 0  )
+        songID > 1  ? songID-- :null ;
         
        
-      const IDQuery = store.get(keyArray.result[countIndex-1]);
+      const IDQuery = store.get(keyArray.result[songID-1]);
       IDQuery.onsuccess = function () {
         console.log("IDQuery.result:", IDQuery.result);
         const isThereAnArtist = new Image();
