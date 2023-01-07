@@ -227,7 +227,8 @@ li {
 .song-info-small {
   display: flex;
   max-height: 40px;
-  width: 20%;
+  width: 400px;
+
   justify-content: space-around;
 }
 .MP-name {

@@ -26,10 +26,14 @@ const MainMenuList = document.querySelector(".main-menu-list");
 const SubMenuDiscover = document.querySelector(".sub-menu-discover");
 const SubMenuPlaylist = document.querySelector(".sub-menu-playlist");
 
-let deleteSongsCount = 0;
+
+
+export let deleteSongsCount = 0;
 let songs;
 let titleState;
 let songID
+let lastid 
+
 
 recentplayed.addEventListener("click", () => {
   requestLocal();
@@ -548,18 +552,31 @@ function generalLoadSearchAPI(songs) {
         let songID = store.count();
 
         songID.onsuccess = function () {
-          console.log("songID", songID.result);
-          console.log("song id:", songID.result + 1 + deleteSongsCount);
-          store.put({
-            id: songID.result + 1 + deleteSongsCount,
-            name: song.name,
-            artist: song.artistName,
-            artistIMG: artistIMG,
-            time: song.playbackSeconds,
-            mp3data: song.previewURL,
-            image: trackArt,
-          });
-        };
+
+          const request = store.openCursor(null, 'prev');
+          request.onsuccess = function(event) {
+            const cursor = event.target.result;
+            if (cursor) {
+              // This is the last object in the table
+              console.log("lastid:",lastid)
+              lastid = cursor.value.id
+            }// get total aomunt of keys and subtrack from lastest key value to find already deleted tracks
+  
+            deleteSongsCount = lastid - songID.result 
+            console.log("deleteSongsCount:",deleteSongsCount)
+          
+            
+            console.log("countIndex.result + 1:",songID.result + 1)
+            store.put({
+              id: songID.result + 1 + deleteSongsCount,
+              name: song.name,
+              artist: song.artistName,
+              artistIMG: artistIMG,
+              time: song.playbackSeconds,
+              mp3data: song.previewURL,
+              image: trackArt,
+            });
+          }};
         tx.oncomplete = function () {
           db.close();
         };
@@ -669,10 +686,29 @@ function loadSearchSongsFromAPI(songs) {
         let tx = db.transaction("songs", "readwrite");
         let store = tx.objectStore("songs");
         let songID = store.count();
+        let keyArray2 = store.getAllKeys()
 
+        keyArray2.onsuccess = function () {
+          console.log("keyArray2:",keyArray2.result)
+          console.log("IDsort keyArray2:",IDsort(keyArray2.result)) 
+
+        }
         songID.onsuccess = function () {
-          //console.log("songID", songID.result);
-          //console.log("song id:", songID.result + 1 + deleteSongsCount);
+
+        const request = store.openCursor(null, 'prev');
+        request.onsuccess = function(event) {
+          const cursor = event.target.result;
+          if (cursor) {
+            // This is the last object in the table
+            console.log("lastid:",lastid)
+            lastid = cursor.value.id
+          }// get total aomunt of keys and subtrack from lastest key value to find already deleted tracks
+
+          deleteSongsCount = lastid - songID.result 
+          console.log("deleteSongsCount:",deleteSongsCount)
+        
+          
+          console.log("countIndex.result + 1:",songID.result + 1)
           store.put({
             id: songID.result + 1 + deleteSongsCount,
             name: song.name,
@@ -682,7 +718,7 @@ function loadSearchSongsFromAPI(songs) {
             mp3data: song.previewURL,
             image: trackArt,
           });
-        };
+        }};
         tx.oncomplete = function () {
           db.close();
         };
@@ -973,3 +1009,8 @@ backButton.addEventListener("click", () => {
     };
   };
 });
+
+
+function IDsort(numbers) {
+  return numbers.map((number, index) => index + 1);
+}

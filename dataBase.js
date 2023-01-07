@@ -1,10 +1,14 @@
 
+import {deleteSongsCount} from "./app.js"
+
+
 let songMp3;
 let songDisplay;
 let songName;
 let songArtist;
 let indexCount = 0;
 let audioTime;
+let lastid
 
 
 const jsmediatags = window.jsmediatags;
@@ -155,9 +159,23 @@ SubmitFile.addEventListener("click", () => {
     let store = tx.objectStore("songs");
     let countIndex = store.count();
     countIndex.onsuccess = function () {
-      console.log(countIndex.result + 1);
+
+      const request = store.openCursor(null, 'prev');
+      request.onsuccess = function(event) {
+        const cursor = event.target.result;
+        if (cursor) {
+          // This is the last object in the table
+          console.log("lastid:",lastid)
+          lastid = cursor.value.id
+        }// get total aomunt of keys and subtrack from lastest key value to find already deleted tracks
+        let deleteSongsLocalCount = deleteSongsCount
+        deleteSongsLocalCount = lastid - countIndex.result 
+        console.log("deleteSongsCount:",deleteSongsLocalCount)
+
+
+      console.log("countIndex.result + 1:",countIndex.result + 1);
       store.put({
-        id: countIndex.result + 1,
+        id: countIndex.result + 1 + deleteSongsLocalCount,
         name: songName,
         artist: songArtist,
         time: audioTime,
@@ -173,7 +191,7 @@ SubmitFile.addEventListener("click", () => {
         console.log("time :", SQuery.result.time);
         audioSong.src = `${SQuery.result.mp3data}`;
       };
-    };
+    }};
     tx.oncomplete = function () {
       db.close();
     };
