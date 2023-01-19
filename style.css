@@ -111,11 +111,6 @@ body {
   padding: 0px 40px 0px 40px;
 }
 
-/* div {
-  border: 1px;
-  border-color: red;
-  border-style: solid;
-} */
 li {
   list-style-type: none;
 }
@@ -123,15 +118,25 @@ li {
 .sub-menu-playlist > li,
 .sub-menu-recent-songs > li,
 .sub-menu-discover > li,
-.sub-menu-upload > li {
+.sub-menu-upload > li,
+.sub-menu-playlist > ul > li {
   margin-top: 30px;
 }
+
+.sub-menu-playlist > ul {
+  padding: 0px;
+}
+
 .main-menu-list > li > button > i,
 .sub-menu-upload > li > button > i {
   width: 20px;
 }
 .sub-menu-upload > label > i {
   width: 20px;
+}
+.sub-menu-playlist > li > button > i {
+  width: 20px;
+  padding-right: 10px;
 }
 
 .selected {
@@ -198,6 +203,7 @@ li {
 
 .ph-music-notes-plus,
 .ph-playlist,
+.sub-menu-playlist > li > button > i,
 .main-menu-list > li > button > .ph-music-notes,
 .ph-magnifying-glass,
 .ph-upload-simple,
@@ -225,21 +231,17 @@ li {
 }
 
 .song-info-small {
-  display: flex;
   max-height: 40px;
-  width: 400px;
-
+  width: 300px;
   justify-content: space-around;
 }
 .MP-name {
   color: white;
   font-size: 16px;
   margin: 0px;
-  padding-right: 10px;
   padding-left: 10px;
-
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -248,11 +250,9 @@ li {
   font-weight: 400;
   font-size: 16px;
   margin: 0px;
-  padding-right: 10px;
   padding-left: 10px;
-
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -588,6 +588,7 @@ button:hover {
 .endTime {
   margin-right: 10px;
   margin-left: 10px;
+  min-width: 35px;
 }
 .ph-speaker-slash,
 .ph-speaker-high {

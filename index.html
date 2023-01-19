@@ -86,21 +86,15 @@
         </ul>
         <ul class="sub-menu-playlist" style="display: none">
           <li>
-            <button>Playlist #1</button>
+            <button class="createNewPlaylist">
+              <i class="ph-plus"></i>Create New Playlist
+            </button>
           </li>
-          <li>
-            <button>Playlist #2</button>
-          </li>
-          <li>
-            <button>Playlist #3</button>
-          </li>
-          <li>
-            <button>Playlist #4</button>
-          </li>
+          <ul class="showPlaylist"></ul>
         </ul>
         <ul class="sub-menu-discover">
           <li>
-            <button class="topTracks">Top Tracks (weekly)</button>
+            <button class="topTracks">Top Tracks Rhapsody</button>
           </li>
           <li>
             <button class="christmasTracks">Christmas Tracks</button>
@@ -159,7 +153,7 @@
       </div>
     </div>
     <div class="media-player">
-      <img src="" alt="" class="song-box-img" />
+      <img src="" alt="" class="song-box-img" style="display: none" />
       <div class="song-info-small">
         <h6 class="MP-name"></h6>
         <h6 class="MP-artist"></h6>

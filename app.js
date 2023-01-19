@@ -25,21 +25,23 @@ const PreviewSongArt = document.querySelector(".preview-song-art");
 const MainMenuList = document.querySelector(".main-menu-list");
 const SubMenuDiscover = document.querySelector(".sub-menu-discover");
 const SubMenuPlaylist = document.querySelector(".sub-menu-playlist");
-
-
+const ShowPlayList = document.querySelector(".showPlaylist");
+const input = document.querySelector("#textInput");
 
 export let deleteSongsCount = 0;
 let songs;
 let titleState;
-let songID
-let lastid 
-
+let songID;
+let lastid;
+let DisplayArrayOfPlaylists;
 
 recentplayed.addEventListener("click", () => {
   requestLocal();
+  input.value = "";
 });
 
 playlist.addEventListener("click", () => {
+  loadPlayLists();
   document.querySelector(".sub-menu-discover").style.display = "none";
   document.querySelector(".sub-menu-recent-songs").style.display = "none";
   document.querySelector(".sub-menu-playlist").style.display = "block";
@@ -49,8 +51,10 @@ playlist.addEventListener("click", () => {
 
   document.querySelector(".songsWithNameTitle").style.display = "none";
   document.querySelector(".artistTracks").style.display = "none";
+
   ArtistTopTracks.innerHTML = " ";
   SongsWithName.innerHTML = " ";
+  input.value = "";
 });
 
 discoverSongs.addEventListener("click", () => {
@@ -66,6 +70,9 @@ discoverSongs.addEventListener("click", () => {
   titleState = false;
   SongsWithName.innerHTML = " ";
   ArtistTopTracks.innerHTML = " ";
+  ShowPlayList.innerHTML = " ";
+
+  input.value = "";
 });
 
 searchbtn.addEventListener("click", () => {
@@ -77,6 +84,7 @@ searchbtn.addEventListener("click", () => {
   document.querySelector(".table-title").innerHTML = "Search";
   ArtistTopTracks.innerHTML = " ";
   SongsWithName.innerHTML = " ";
+  ShowPlayList.innerHTML = " ";
   document.querySelector(".songsWithNameTitle").style.display = "none";
   document.querySelector(".artistTracks").style.display = "none";
 
@@ -97,6 +105,8 @@ upload.addEventListener("click", () => {
   document.querySelector(".table-title").innerHTML = "Upload";
   ArtistTopTracks.innerHTML = " ";
   SongsWithName.innerHTML = " ";
+  ShowPlayList.innerHTML = " ";
+  input.value = "";
 });
 document.querySelector(".recently-played").classList.add("selectedBtn");
 
@@ -144,7 +154,7 @@ function isAudioPLaying() {
 
 async function retrieveTopTracksWeek() {
   await fetch(
-    "http://api.napster.com/v2.2/tracks/top?apikey=YTkxZTRhNzAtODdlNy00ZjMzLTg0MWItOTc0NmZmNjU4Yzk4&range=week"
+    "https://api.napster.com/v2.0/tracks/top?apikey=YTkxZTRhNzAtODdlNy00ZjMzLTg0MWItOTc0NmZmNjU4Yzk4&range=month"
   )
     .then((response) => {
       if (!response.ok) {
@@ -166,7 +176,7 @@ async function retrieveTopTracksWeek() {
 
 async function retrieveChristmasTracks() {
   await fetch(
-    "http://api.napster.com/v2.2/genres/g.120/tracks/top?apikey=YTkxZTRhNzAtODdlNy00ZjMzLTg0MWItOTc0NmZmNjU4Yzk4"
+    "https://api.napster.com/v2.0/genres/g.120/tracks/top?apikey=YTkxZTRhNzAtODdlNy00ZjMzLTg0MWItOTc0NmZmNjU4Yzk4"
   )
     .then((response) => {
       if (!response.ok) {
@@ -188,7 +198,7 @@ async function retrieveChristmasTracks() {
 
 async function retrieveRapHipHopTracks() {
   await fetch(
-    "http://api.napster.com/v2.2/genres/g.146/tracks/top?apikey=YTkxZTRhNzAtODdlNy00ZjMzLTg0MWItOTc0NmZmNjU4Yzk4&range=week"
+    "https://api.napster.com/v2.0/genres/g.146/tracks/top?apikey=YTkxZTRhNzAtODdlNy00ZjMzLTg0MWItOTc0NmZmNjU4Yzk4&range=week"
   )
     .then((response) => {
       if (!response.ok) {
@@ -209,14 +219,13 @@ async function retrieveRapHipHopTracks() {
 }
 
 async function retrieveSongsSearch() {
-  const input = document.querySelector("#textInput");
   const inputValue = input.value;
   let artistName;
   let trackName;
 
   console.log(inputValue);
   await fetch(
-    `http://api.napster.com/v2.2/search?apikey=YTkxZTRhNzAtODdlNy00ZjMzLTg0MWItOTc0NmZmNjU4Yzk4&per_type_limit=10&query=${inputValue}`
+    `https://api.napster.com/v2.2/search?apikey=YTkxZTRhNzAtODdlNy00ZjMzLTg0MWItOTc0NmZmNjU4Yzk4&per_type_limit=10&query=${inputValue}`
   )
     .then((response) => {
       if (!response.ok) {
@@ -239,7 +248,7 @@ async function retrieveSongsSearch() {
     );
 
   await fetch(
-    `http://api.napster.com/v2.2/artists/${artistName}/tracks/top?apikey=YTkxZTRhNzAtODdlNy00ZjMzLTg0MWItOTc0NmZmNjU4Yzk4&limit=20`
+    `https://api.napster.com/v2.2/artists/${artistName}/tracks/top?apikey=YTkxZTRhNzAtODdlNy00ZjMzLTg0MWItOTc0NmZmNjU4Yzk4&limit=20`
   )
     .then((response) => {
       if (!response.ok) {
@@ -285,6 +294,7 @@ function requestLocal() {
   document.querySelector(".artistTracks").style.display = "none";
   console.log("open db on event click");
   document.querySelector(".table-title").innerHTML = "Recently Added";
+  ShowPlayList.innerHTML = " ";
 
   let indexedDB =
     window.indexedDB ||
@@ -297,13 +307,17 @@ function requestLocal() {
   open.onupgradeneeded = function () {
     let db = open.result;
     const store = db.createObjectStore("songs", { keyPath: "id" });
+    const store2 = db.createObjectStore("playlists", { keyPath: "id" });
     store.createIndex("song_name", ["name"], { unique: false });
+    store2.createIndex("playlist_name", ["name"], { unique: false });
   };
 
   open.onsuccess = function () {
     let db = open.result;
     let tx = db.transaction("songs", "readwrite");
+
     let store = tx.objectStore("songs");
+    console.log("store", store);
 
     const IDQuery = store.getAll();
 
@@ -358,14 +372,7 @@ function requestLocal() {
             window.mozIndexedDB ||
             window.webkitIndexedDB ||
             window.msIndexedDB;
-
           let open = indexedDB.open("SongsDatabase", 1);
-
-          open.onupgradeneeded = function () {
-            let db = open.result;
-            const store = db.createObjectStore("songs", { keyPath: "id" });
-            store.createIndex("song_name", ["name"], { unique: false });
-          };
 
           open.onsuccess = function () {
             let db = open.result;
@@ -391,6 +398,11 @@ function requestLocal() {
         });
 
         songdiv.addEventListener("click", (event) => {
+          MPimg.style.display = "block";
+          playButton.querySelector("i").classList.remove("ph-pause");
+          playButton.querySelector("i").classList.add("ph-play");
+          playButton.classList.remove("selectedBtn");
+          musicPlayer.classList.remove("playing");
           // Get all elements with the "selected" class
           const selectedElements =
             ArtistTopTracks.querySelectorAll(".selected");
@@ -404,20 +416,12 @@ function requestLocal() {
           if (["IMG", "DIV", "H5"].includes(event.target.tagName)) {
             songdiv.classList.add("selected");
           }
-
           let indexedDB =
             window.indexedDB ||
             window.mozIndexedDB ||
             window.webkitIndexedDB ||
             window.msIndexedDB;
-
           let open = indexedDB.open("SongsDatabase", 1);
-
-          open.onupgradeneeded = function () {
-            let db = open.result;
-            const store = db.createObjectStore("songs", { keyPath: "id" });
-            store.createIndex("song_name", ["name"], { unique: false });
-          };
 
           open.onsuccess = function () {
             let db = open.result;
@@ -442,13 +446,13 @@ function requestLocal() {
                 // // call style again to display any user uploaded songs not from url
                 //img.style.backgroundImage = IDQuery.result.image;
               };
-              
+
               console.log("IDQuery.result.time", IDQuery.result.time);
-              
-              songID = IDQuery.result.id
-              
+
+              songID = IDQuery.result.id;
+
               console.log("songID", songID);
-              
+
               audioSong.src = `${IDQuery.result.mp3data}`;
               PreviewSongArt.src = IDQuery.result.image;
               PreviewTitle.innerHTML = IDQuery.result.name;
@@ -504,20 +508,16 @@ function generalLoadSearchAPI(songs) {
         <div style="text-align: left; width:200px; padding-right: 10px"> 
           <h5 class="card-title " >${song.name}</h5>
         </div>
-
         <div style="text-align: left; width:200px; padding-right: 10px"> 
           <h5 class="card-title " >${song.artistName}</h5>
         </div>
-
         <div style="text-align: left; width:200px; padding-right: 10px"> 
           <h5 class="card-title" >${secondsToMinutes(seconds)}</h5>
         </div>
-
         <div style="text-align: left; width:200px; "> 
           <i class="ph-plus" ref="plusbtn"></i>
           
         </div>
-
       </div>`;
 
     let { plusbtn, songdiv } = context.collect();
@@ -536,14 +536,7 @@ function generalLoadSearchAPI(songs) {
         window.mozIndexedDB ||
         window.webkitIndexedDB ||
         window.msIndexedDB;
-
       let open = indexedDB.open("SongsDatabase", 1);
-
-      open.onupgradeneeded = function () {
-        let db = open.result;
-        const store = db.createObjectStore("songs", { keyPath: "id" });
-        store.createIndex("song_name", ["name"], { unique: false });
-      };
 
       open.onsuccess = function () {
         let db = open.result;
@@ -552,21 +545,20 @@ function generalLoadSearchAPI(songs) {
         let songID = store.count();
 
         songID.onsuccess = function () {
-
-          const request = store.openCursor(null, 'prev');
-          request.onsuccess = function(event) {
+          const request = store.openCursor(null, "prev");
+          request.onsuccess = function (event) {
             const cursor = event.target.result;
+            console.log("cursor", cursor);
             if (cursor) {
               // This is the last object in the table
-              console.log("lastid:",lastid)
-              lastid = cursor.value.id
-            }// get total aomunt of keys and subtrack from lastest key value to find already deleted tracks
-  
-            deleteSongsCount = lastid - songID.result 
-            console.log("deleteSongsCount:",deleteSongsCount)
-          
-            
-            console.log("countIndex.result + 1:",songID.result + 1)
+              console.log("lastid:", lastid);
+              lastid = cursor.value.id;
+            } else {
+              lastid = 0;
+            } // get total aomunt of keys and subtrack from lastest key value to find already deleted tracks
+            console.log("songID", songID);
+            deleteSongsCount = lastid - songID.result;
+
             store.put({
               id: songID.result + 1 + deleteSongsCount,
               name: song.name,
@@ -576,7 +568,8 @@ function generalLoadSearchAPI(songs) {
               mp3data: song.previewURL,
               image: trackArt,
             });
-          }};
+          };
+        };
         tx.oncomplete = function () {
           db.close();
         };
@@ -584,6 +577,11 @@ function generalLoadSearchAPI(songs) {
     });
 
     songdiv.addEventListener("click", () => {
+      MPimg.style.display = "block";
+      playButton.querySelector("i").classList.remove("ph-pause");
+      playButton.querySelector("i").classList.add("ph-play");
+      playButton.classList.remove("selectedBtn");
+      musicPlayer.classList.remove("playing");
       const isThereAnArtist = new Image();
       isThereAnArtist.src = artistIMG;
       isThereAnArtist.onload = function () {
@@ -640,20 +638,16 @@ function loadSearchSongsFromAPI(songs) {
         <div style="text-align: left; width:200px; padding-right: 10px"> 
           <h5 class="card-title " >${song.name}</h5>
         </div>
-
         <div style="text-align: left; width:200px; padding-right: 10px"> 
           <h5 class="card-title " >${song.artistName}</h5>
         </div>
-
         <div style="text-align: left; width:200px; padding-right: 10px"> 
           <h5 class="card-title" >${secondsToMinutes(seconds)}</h5>
         </div>
-
         <div style="text-align: left; width:200px; "> 
           <i class="ph-plus" ref="plusbtn"></i>
           
         </div>
-
       </div>`;
 
     let { plusbtn, songdiv } = context.collect();
@@ -672,53 +666,39 @@ function loadSearchSongsFromAPI(songs) {
         window.mozIndexedDB ||
         window.webkitIndexedDB ||
         window.msIndexedDB;
-
       let open = indexedDB.open("SongsDatabase", 1);
-
-      open.onupgradeneeded = function () {
-        let db = open.result;
-        const store = db.createObjectStore("songs", { keyPath: "id" });
-        store.createIndex("song_name", ["name"], { unique: false });
-      };
-
       open.onsuccess = function () {
         let db = open.result;
         let tx = db.transaction("songs", "readwrite");
         let store = tx.objectStore("songs");
         let songID = store.count();
-        let keyArray2 = store.getAllKeys()
-
-        keyArray2.onsuccess = function () {
-          console.log("keyArray2:",keyArray2.result)
-          console.log("IDsort keyArray2:",IDsort(keyArray2.result)) 
-
-        }
         songID.onsuccess = function () {
+          const request = store.openCursor(null, "prev");
+          request.onsuccess = function (event) {
+            const cursor = event.target.result;
+            if (cursor) {
+              // This is the last object in the table
+              console.log("lastid:", lastid);
+              lastid = cursor.value.id;
+            } else {
+              lastid = 0;
+            } // get total aomunt of keys and subtrack from lastest key value to find already deleted tracks
 
-        const request = store.openCursor(null, 'prev');
-        request.onsuccess = function(event) {
-          const cursor = event.target.result;
-          if (cursor) {
-            // This is the last object in the table
-            console.log("lastid:",lastid)
-            lastid = cursor.value.id
-          }// get total aomunt of keys and subtrack from lastest key value to find already deleted tracks
+            deleteSongsCount = lastid - songID.result;
+            console.log("deleteSongsCount:", deleteSongsCount);
 
-          deleteSongsCount = lastid - songID.result 
-          console.log("deleteSongsCount:",deleteSongsCount)
-        
-          
-          console.log("countIndex.result + 1:",songID.result + 1)
-          store.put({
-            id: songID.result + 1 + deleteSongsCount,
-            name: song.name,
-            artist: song.artistName,
-            artistIMG: artistIMG,
-            time: song.playbackSeconds,
-            mp3data: song.previewURL,
-            image: trackArt,
-          });
-        }};
+            console.log("countIndex.result + 1:", songID.result + 1);
+            store.put({
+              id: songID.result + 1 + deleteSongsCount,
+              name: song.name,
+              artist: song.artistName,
+              artistIMG: artistIMG,
+              time: song.playbackSeconds,
+              mp3data: song.previewURL,
+              image: trackArt,
+            });
+          };
+        };
         tx.oncomplete = function () {
           db.close();
         };
@@ -726,6 +706,11 @@ function loadSearchSongsFromAPI(songs) {
     });
 
     songdiv.addEventListener("click", () => {
+      MPimg.style.display = "block";
+      playButton.querySelector("i").classList.remove("ph-pause");
+      playButton.querySelector("i").classList.add("ph-play");
+      playButton.classList.remove("selectedBtn");
+      musicPlayer.classList.remove("playing");
       const isThereAnArtist = new Image();
       isThereAnArtist.src = artistIMG;
       isThereAnArtist.onload = function () {
@@ -855,10 +840,9 @@ rapHipHopTracks.addEventListener("click", () => {
   retrieveRapHipHopTracks();
 });
 
-
 forwardButton.addEventListener("click", () => {
   console.log("open db on event click");
-  
+
   let indexedDB =
     window.indexedDB ||
     window.mozIndexedDB ||
@@ -867,35 +851,22 @@ forwardButton.addEventListener("click", () => {
 
   let open = indexedDB.open("SongsDatabase", 1);
 
-  open.onupgradeneeded = function () {
-    let db = open.result;
-    const store = db.createObjectStore("songs", { keyPath: "id" });
-    store.createIndex("song_name", ["name"], { unique: false });
-    
-  };
-  
   open.onsuccess = function () {
-    
     let db = open.result;
     let tx = db.transaction("songs", "readwrite");
     let store = tx.objectStore("songs");
     const audioSong = document.querySelector("audio");
 
+    let keyArray = store.getAllKeys();
 
-    
-    let keyArray = store.getAllKeys()
-    
-    
-   
-    
-      keyArray.onsuccess = function () {
-        console.log("keyArray.result[indexCount]", keyArray.result.length)
-        console.log("songID",songID);
-        console.log("songID",songID);
-        songID == 0  || songID < keyArray.result.length? songID++ :null ;
-        
-        console.log("songID",songID);
-      const IDQuery = store.get(keyArray.result[songID-1]);
+    keyArray.onsuccess = function () {
+      console.log("keyArray.result[indexCount]", keyArray.result.length);
+      console.log("songID", songID);
+      console.log("songID", songID);
+      songID == 0 || songID < keyArray.result.length ? songID++ : null;
+
+      console.log("songID", songID);
+      const IDQuery = store.get(keyArray.result[songID - 1]);
       IDQuery.onsuccess = function () {
         console.log("IDQuery.result:", IDQuery.result);
         const isThereAnArtist = new Image();
@@ -924,7 +895,6 @@ forwardButton.addEventListener("click", () => {
         MPName.innerHTML = IDQuery.result.name;
         MPArtist.innerHTML = IDQuery.result.artist;
       };
-     
     };
 
     tx.oncomplete = function () {
@@ -932,8 +902,6 @@ forwardButton.addEventListener("click", () => {
     };
   };
 });
-
-
 
 backButton.addEventListener("click", () => {
   console.log("open db on event click");
@@ -945,34 +913,21 @@ backButton.addEventListener("click", () => {
 
   let open = indexedDB.open("SongsDatabase", 1);
 
-  open.onupgradeneeded = function () {
-    let db = open.result;
-    const store = db.createObjectStore("songs", { keyPath: "id" });
-    store.createIndex("song_name", ["name"], { unique: false });
-    
-  };
-  
   open.onsuccess = function () {
-    
     let db = open.result;
     let tx = db.transaction("songs", "readwrite");
     let store = tx.objectStore("songs");
     const audioSong = document.querySelector("audio");
 
+    let keyArray = store.getAllKeys();
 
-    
-    let keyArray = store.getAllKeys()
-    
-   
-    
-      keyArray.onsuccess = function () {
-        console.log("keyArray.result.length ", keyArray.result )
-        console.log("indexCount", songID)
-        console.log(songID > 0  )
-        songID > 1  ? songID-- :null ;
-        
-       
-      const IDQuery = store.get(keyArray.result[songID-1]);
+    keyArray.onsuccess = function () {
+      console.log("keyArray.result.length ", keyArray.result);
+      console.log("indexCount", songID);
+      console.log(songID > 0);
+      songID > 1 ? songID-- : null;
+
+      const IDQuery = store.get(keyArray.result[songID - 1]);
       IDQuery.onsuccess = function () {
         console.log("IDQuery.result:", IDQuery.result);
         const isThereAnArtist = new Image();
@@ -1001,7 +956,6 @@ backButton.addEventListener("click", () => {
         MPName.innerHTML = IDQuery.result.name;
         MPArtist.innerHTML = IDQuery.result.artist;
       };
-     
     };
 
     tx.oncomplete = function () {
@@ -1010,7 +964,74 @@ backButton.addEventListener("click", () => {
   };
 });
 
+const createNewPlaylist = document.querySelector(".createNewPlaylist");
+let playlistArray = [];
 
-function IDsort(numbers) {
-  return numbers.map((number, index) => index + 1);
+createNewPlaylist.addEventListener("click", openPrompt);
+
+function openPrompt() {
+  let playlistName = prompt("Please enter playlist name:", "");
+  if (playlistName != null) {
+    playlistArray.push(playlistName);
+
+    let indexedDB =
+      window.indexedDB ||
+      window.mozIndexedDB ||
+      window.webkitIndexedDB ||
+      window.msIndexedDB;
+
+    let open = indexedDB.open("SongsDatabase", 1);
+
+    open.onsuccess = function () {
+      let db = open.result;
+      let tx = db.transaction("playlists", "readwrite");
+      let store = tx.objectStore("playlists");
+      const IDQuery = store.getAll();
+
+      store.put({
+        // need to fix this ***************************
+        id: 1,
+        name: playlistName,
+      });
+
+      tx.oncomplete = function () {
+        db.close();
+      };
+    };
+  }
+}
+function loadPlayLists() {
+  let indexedDB =
+    window.indexedDB ||
+    window.mozIndexedDB ||
+    window.webkitIndexedDB ||
+    window.msIndexedDB;
+
+  let open = indexedDB.open("SongsDatabase", 1);
+
+  open.onsuccess = function () {
+    let db = open.result;
+    let tx = db.transaction("playlists", "readwrite");
+    let store = tx.objectStore("playlists");
+    const IDQuery = store.getAll();
+    IDQuery.onsuccess = function () {
+      console.log("IDQuery.result", IDQuery.result);
+      ArtistTopTracks.innerHTML = " ";
+      SongsWithName.innerHTML = " ";
+
+      DisplayArrayOfPlaylists = IDQuery.result.reverse().map((playlist) => {
+        let context = f`<li class="playlist-id-${playlist.id}">
+              <button>${playlist.name}</button>
+            </li>`;
+
+        playlistElement = ShowPlayList.appendChild(context);
+        return playlistElement;
+      });
+      console.log(DisplayArrayOfPlaylists);
+      return DisplayArrayOfPlaylists;
+    };
+    tx.oncomplete = function () {
+      db.close();
+    };
+  };
 }
