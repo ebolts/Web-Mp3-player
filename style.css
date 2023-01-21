@@ -138,6 +138,15 @@ li {
   width: 20px;
   padding-right: 10px;
 }
+.ph-magnifying-glass,
+.ph-playlist {
+  width: 20px;
+}
+.ph-dots-three-vertical {
+  padding-left: 25px;
+  padding-top: 5px;
+  scale: 1.4;
+}
 
 .selected {
   background-color: rgb(10, 10, 10);
@@ -290,7 +299,7 @@ i {
 }
 
 button {
-  background-color: rgb(21, 21, 21);
+  background-color: rgb(21, 21, 21, 0);
   border-style: none;
   box-sizing: border-box;
   color: rgb(154, 154, 154);
@@ -315,8 +324,16 @@ button {
   -webkit-user-select: none;
   touch-action: manipulation;
 }
-
 button:hover {
+  color: white;
+  background-color: rgb(10, 10, 10);
+}
+.PLdiv:hover {
+  color: white;
+  background-color: rgb(10, 10, 10);
+}
+
+.PLdiv:hover > button {
   color: white;
   background-color: rgb(10, 10, 10);
 }
@@ -447,7 +464,7 @@ button:hover {
   -webkit-user-select: none;
   touch-action: manipulation;
 }
-.searchBtn:hover {
+.searchBtn:hover ~ .testdiv {
   color: white;
   background-color: rgb(10, 10, 10);
 }

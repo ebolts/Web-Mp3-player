@@ -29,15 +29,16 @@ const ShowPlayList = document.querySelector(".showPlaylist");
 const input = document.querySelector("#textInput");
 
 export let deleteSongsCount = 0;
+let deletePLCount = 0;
 let songs;
 let titleState;
 let songID;
 let lastid;
 let DisplayArrayOfPlaylists;
-
+requestLocal();
 recentplayed.addEventListener("click", () => {
   requestLocal();
-  input.value = "";
+  input.value = " ";
 });
 
 playlist.addEventListener("click", () => {
@@ -85,6 +86,7 @@ searchbtn.addEventListener("click", () => {
   ArtistTopTracks.innerHTML = " ";
   SongsWithName.innerHTML = " ";
   ShowPlayList.innerHTML = " ";
+  input.value = "";
   document.querySelector(".songsWithNameTitle").style.display = "none";
   document.querySelector(".artistTracks").style.display = "none";
 
@@ -344,58 +346,79 @@ function requestLocal() {
         }" >
             </div>
             
-            <div style="text-align: left; width:200px; padding-right: 10px"> 
+            <div style="text-align: left; width:200px; "> 
               <h5 class="card-title " >${song.name}</h5>
             </div>
     
-            <div style="text-align: left; width:200px; padding-right: 10px"> 
+            <div style="text-align: left; width:200px; "> 
               <h5 class="card-title " >${song.artist}</h5>
             </div>
     
-            <div style="text-align: left; width:200px; padding-right: 10px"> 
+            <div style="text-align: left; width:200px; "> 
               <h5 class="card-title" >${secondsToMinutes(seconds)}</h5>
             </div>
     
-            <div style="text-align: left; width:200px; "> 
-              <i class="ph-minus" ref="minusbtn"></i>
+            <div style="text-align: left; width:200px; height:30px "> 
+            <i class="ph-dots-three-vertical" ref="dropDown"></i>
               
             </div>
     
           </div>`;
 
-        let { minusbtn, songdiv } = context.collect();
+        let { dropDown, songdiv } = context.collect();
 
-        minusbtn.addEventListener("click", () => {
-          console.log("open db on event click");
+        dropDown.addEventListener("click", () => {
           let indexedDB =
             window.indexedDB ||
             window.mozIndexedDB ||
             window.webkitIndexedDB ||
             window.msIndexedDB;
-          let open = indexedDB.open("SongsDatabase", 1);
 
+          let open = indexedDB.open("SongsDatabase", 1);
+          open.onupgradeneeded = function () {
+            let db = open.result;
+            const store3 = db.createObjectStore("store3", { keyPath: "id" });
+
+            store3.createIndex("store3_name", ["name"], { unique: false });
+            console.log("store3");
+          };
           open.onsuccess = function () {
             let db = open.result;
-            let tx = db.transaction("songs", "readwrite");
-            let store = tx.objectStore("songs");
-            let elementName = document.querySelector(`.song-id-${song.id}`);
-            let childNodes = Array.from(ArtistTopTracks.childNodes);
-            let index = childNodes.indexOf(elementName);
-            console.log(index);
-            let removeElementNode = ArtistTopTracks.childNodes[index];
-            store.delete(song.id);
-
-            console.log(removeElementNode);
-            deleteSongsCount++;
-
-            songElement = ArtistTopTracks.removeChild(removeElementNode);
-
-            return songElement;
-          };
-          tx.oncomplete = function () {
-            db.close();
+            console.log(db.version);
           };
         });
+
+        // minusbtn.addEventListener("click", () => {
+        //   console.log("open db on event click");
+        //   let indexedDB =
+        //     window.indexedDB ||
+        //     window.mozIndexedDB ||
+        //     window.webkitIndexedDB ||
+        //     window.msIndexedDB;
+        //   let open = indexedDB.open("SongsDatabase", 1);
+
+        //   open.onsuccess = function () {
+        //     let db = open.result;
+        //     let tx = db.transaction("songs", "readwrite");
+        //     let store = tx.objectStore("songs");
+        //     let elementName = document.querySelector(`.song-id-${song.id}`);
+        //     let childNodes = Array.from(ArtistTopTracks.childNodes);
+        //     let index = childNodes.indexOf(elementName);
+        //     console.log(index);
+        //     let removeElementNode = ArtistTopTracks.childNodes[index];
+        //     store.delete(song.id);
+
+        //     console.log(removeElementNode);
+        //     deleteSongsCount++;
+
+        //     songElement = ArtistTopTracks.removeChild(removeElementNode);
+
+        //     return songElement;
+        //   };
+        //   tx.oncomplete = function () {
+        //     db.close();
+        //   };
+        // });
 
         songdiv.addEventListener("click", (event) => {
           MPimg.style.display = "block";
@@ -435,8 +458,10 @@ function requestLocal() {
               const isThereAnArtist = new Image();
 
               isThereAnArtist.src = IDQuery.result.artistIMG;
+
               isThereAnArtist.onload = function () {
                 // The image has been successfully loaded
+
                 img.src = IDQuery.result.artistIMG;
               };
               // Set a callback function to run if there was an error loading the image
@@ -505,13 +530,13 @@ function generalLoadSearchAPI(songs) {
           <img class="image" src=${trackArt} style=" width: 50%; height: auto;" >
         </div>
         
-        <div style="text-align: left; width:200px; padding-right: 10px"> 
+        <div style="text-align: left; width:200px; "> 
           <h5 class="card-title " >${song.name}</h5>
         </div>
-        <div style="text-align: left; width:200px; padding-right: 10px"> 
+        <div style="text-align: left; width:200px; "> 
           <h5 class="card-title " >${song.artistName}</h5>
         </div>
-        <div style="text-align: left; width:200px; padding-right: 10px"> 
+        <div style="text-align: left; width:200px; "> 
           <h5 class="card-title" >${secondsToMinutes(seconds)}</h5>
         </div>
         <div style="text-align: left; width:200px; "> 
@@ -635,13 +660,13 @@ function loadSearchSongsFromAPI(songs) {
           <img class="image" src=${trackArt} style=" width: 50%; height: auto;" >
         </div>
         
-        <div style="text-align: left; width:200px; padding-right: 10px"> 
+        <div style="text-align: left; width:200px; "> 
           <h5 class="card-title " >${song.name}</h5>
         </div>
-        <div style="text-align: left; width:200px; padding-right: 10px"> 
+        <div style="text-align: left; width:200px; "> 
           <h5 class="card-title " >${song.artistName}</h5>
         </div>
-        <div style="text-align: left; width:200px; padding-right: 10px"> 
+        <div style="text-align: left; width:200px; "> 
           <h5 class="card-title" >${secondsToMinutes(seconds)}</h5>
         </div>
         <div style="text-align: left; width:200px; "> 
@@ -687,7 +712,7 @@ function loadSearchSongsFromAPI(songs) {
             deleteSongsCount = lastid - songID.result;
             console.log("deleteSongsCount:", deleteSongsCount);
 
-            console.log("countIndex.result + 1:", songID.result + 1);
+            console.log("songID.result + 1:", songID.result + 1);
             store.put({
               id: songID.result + 1 + deleteSongsCount,
               name: song.name,
@@ -745,8 +770,6 @@ function loadSearchSongsFromAPI(songs) {
     document.querySelector(".songsWithNameTitle").style.display = "block";
   }
 }
-
-requestLocal();
 
 playButton.addEventListener("click", () => {
   isAudioPLaying() ? pauseAudio() : playAudio(); // is audio play true? then pause else play
@@ -986,21 +1009,41 @@ function openPrompt() {
       let db = open.result;
       let tx = db.transaction("playlists", "readwrite");
       let store = tx.objectStore("playlists");
-      const IDQuery = store.getAll();
+      let playListID = store.count();
 
-      store.put({
-        // need to fix this ***************************
-        id: 1,
-        name: playlistName,
-      });
+      playListID.onsuccess = function () {
+        const request = store.openCursor(null, "prev");
+        request.onsuccess = function (event) {
+          const cursor = event.target.result;
+          console.log("event.target.result ", event.target.result);
+          if (cursor) {
+            // This is the last object in the table
+            console.log("lastid:", lastid);
+            lastid = cursor.value.id;
+          } else {
+            lastid = 0;
+          } // get total aomunt of keys and subtrack from lastest key value to find already deleted tracks
+
+          deletePLCount = lastid - playListID.result;
+          console.log("deletePLCount:", deletePLCount);
+
+          console.log("playListID.result + 1:", playListID.result + 1);
+          store.put({
+            id: playListID.result + 1 + deletePLCount,
+            name: playlistName,
+          });
+        };
+      };
 
       tx.oncomplete = function () {
         db.close();
       };
     };
   }
+  loadPlayLists();
 }
 function loadPlayLists() {
+  ShowPlayList.innerHTML = " ";
   let indexedDB =
     window.indexedDB ||
     window.mozIndexedDB ||
@@ -1010,6 +1053,7 @@ function loadPlayLists() {
   let open = indexedDB.open("SongsDatabase", 1);
 
   open.onsuccess = function () {
+    let playlistElement;
     let db = open.result;
     let tx = db.transaction("playlists", "readwrite");
     let store = tx.objectStore("playlists");
@@ -1021,8 +1065,49 @@ function loadPlayLists() {
 
       DisplayArrayOfPlaylists = IDQuery.result.reverse().map((playlist) => {
         let context = f`<li class="playlist-id-${playlist.id}">
-              <button>${playlist.name}</button>
+              <div class= "PLdiv" style="display:flex"> 
+                <button><i class="ph-playlist"></i>${playlist.name}</button>
+                <div  style="display:flex; width:20px;"> 
+                  <i class="ph-minus" ref="minusbtn" style="width:20px; height:10px; padding-top:15px"></i>
+                </div>
+              </div>  
             </li>`;
+
+        let { minusbtn } = context.collect();
+
+        minusbtn.addEventListener("click", () => {
+          console.log("open db on event click");
+          let indexedDB =
+            window.indexedDB ||
+            window.mozIndexedDB ||
+            window.webkitIndexedDB ||
+            window.msIndexedDB;
+          let open = indexedDB.open("SongsDatabase", 1);
+
+          open.onsuccess = function () {
+            let db = open.result;
+            let tx = db.transaction("playlists", "readwrite");
+            let store = tx.objectStore("playlists");
+            let elementName = document.querySelector(
+              `.playlist-id-${playlist.id}`
+            );
+            let childNodes = Array.from(ShowPlayList.childNodes);
+            let index = childNodes.indexOf(elementName);
+            console.log(index);
+            let removeElementNode = ShowPlayList.childNodes[index];
+            store.delete(playlist.id);
+
+            console.log(removeElementNode);
+            deletePLCount++;
+
+            playlistElement = ShowPlayList.removeChild(removeElementNode);
+
+            return playlistElement;
+          };
+          tx.oncomplete = function () {
+            db.close();
+          };
+        });
 
         playlistElement = ShowPlayList.appendChild(context);
         return playlistElement;
