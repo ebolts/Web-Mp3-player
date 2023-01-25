@@ -317,11 +317,15 @@ function requestLocal() {
   open.onsuccess = function () {
     let db = open.result;
     let tx = db.transaction("songs", "readwrite");
+    let tx2 = db.transaction("playlists", "readwrite");
 
     let store = tx.objectStore("songs");
-    console.log("store", store);
+    let store2 = tx2.objectStore("playlists");
+    // used when a users wants to add more than one song to a new playlist.
+    let AddMorePL = 0;
 
     const IDQuery = store.getAll();
+    const PLQuery = store2.getAll();
 
     IDQuery.onsuccess = function () {
       ArtistTopTracks.innerHTML = " ";
@@ -331,6 +335,7 @@ function requestLocal() {
         let seconds = song.time;
         console.log(seconds);
         let songElement;
+
         console.log("song:", song);
 
         let context = f`<div class="song-id-${
@@ -345,80 +350,171 @@ function requestLocal() {
           song.image
         }" >
             </div>
-            
-            <div style="text-align: left; width:200px; "> 
-              <h5 class="card-title " >${song.name}</h5>
+              <div style="text-align: left; width:200px; "> 
+                <h5 class="card-title " >${song.name}</h5>
+              </div>
+      
+              <div style="text-align: left; width:200px; "> 
+                <h5 class="card-title " >${song.artist}</h5>
+              </div>
+      
+              <div style="text-align: left; width:200px; "> 
+                <h5 class="card-title" >${secondsToMinutes(seconds)}</h5>
+              </div>
+      
+              <div class="dropDownDiv" style="text-align: left; width:200px; height:30px "> 
+                <i class="ph-dots-three-vertical" ref="dropDown" style="width:15px"></i>
+                
+                <div class="options" style=" z-index:10; position: absolute;" ref="dropDownContent">
+                    <button ref="deletedBTN"> <i class="ph-minus" style="width:25px; height:10px; padding-top: 4px"></i>Remove from library</button>
+                    <button ref="newPL"> <i class="ph-list-plus" style="width:25px; padding-top: 4px"></i> Create new playlist</button>
+                    <label class="optionLabel">Add to playlist</label>
+                    <div class="dropDownplDiv" ref="dropDownContentPL"></div>
+              </div>
             </div>
-    
-            <div style="text-align: left; width:200px; "> 
-              <h5 class="card-title " >${song.artist}</h5>
-            </div>
-    
-            <div style="text-align: left; width:200px; "> 
-              <h5 class="card-title" >${secondsToMinutes(seconds)}</h5>
-            </div>
-    
-            <div style="text-align: left; width:200px; height:30px "> 
-            <i class="ph-dots-three-vertical" ref="dropDown"></i>
-              
-            </div>
-    
           </div>`;
 
-        let { dropDown, songdiv } = context.collect();
+        let {
+          dropDown,
+          dropDownContent,
+          dropDownContentPL,
+          songdiv,
+          deletedBTN,
+          newPL,
+        } = context.collect();
 
-        dropDown.addEventListener("click", () => {
+        document.addEventListener("click", function (event) {
+          songdiv.classList.add("selected");
+          if (!songdiv.contains(event.target)) {
+            songdiv.classList.remove("selected");
+
+            dropDownContent.classList.remove("show");
+
+            dropDownContentPL.innerHTML = " ";
+          }
+        });
+
+        dropDown.addEventListener("click", (event) => {
+          if (dropDownContent.classList.contains("show")) {
+            dropDownContent.classList.remove("show");
+
+            dropDownContentPL.innerHTML = " ";
+          } else {
+            PLQuery.result.reverse().map((playlist) => {
+              let PLcontent = f`<button ref="playlistbtn"> <i class="ph-playlist" style="width:25px; padding-top: 4px"></i>${playlist.name}</button>`;
+
+              let { playlistbtn } = PLcontent.collect();
+              playlistbtn.addEventListener("click", (event) => {
+                console.log("open db on event click");
+
+                let indexedDB =
+                  window.indexedDB ||
+                  window.mozIndexedDB ||
+                  window.webkitIndexedDB ||
+                  window.msIndexedDB;
+                let open = indexedDB.open("SongsDatabase", 1);
+
+                open.onsuccess = function () {
+                  let db = open.result;
+                  let tx = db.transaction("songs", "readwrite");
+                  let store = tx.objectStore("songs");
+                  store.put({
+                    id: song.id,
+                    name: song.name,
+                    artist: song.artist,
+                    artistIMG: song.artistIMG,
+                    time: song.time,
+                    mp3data: song.mp3data,
+                    image: song.image,
+                    playlistID: playlist.id,
+                  });
+                };
+
+                tx.oncomplete = function () {
+                  db.close();
+                };
+              });
+
+              dropDownContentPL.appendChild(PLcontent);
+            });
+
+            dropDownContent.classList.add("show");
+          }
+        });
+
+        newPL.addEventListener("click", (event) => {
+          openPrompt();
+
           let indexedDB =
             window.indexedDB ||
             window.mozIndexedDB ||
             window.webkitIndexedDB ||
             window.msIndexedDB;
-
           let open = indexedDB.open("SongsDatabase", 1);
-          open.onupgradeneeded = function () {
-            let db = open.result;
-            const store3 = db.createObjectStore("store3", { keyPath: "id" });
 
-            store3.createIndex("store3_name", ["name"], { unique: false });
-            console.log("store3");
-          };
           open.onsuccess = function () {
             let db = open.result;
-            console.log(db.version);
+            let tx = db.transaction("songs", "readwrite");
+
+            let store = tx.objectStore("songs");
+
+            let PLID = PLQuery.result.length;
+            if (PLID == 0) {
+              deletePLCount = 0;
+            }
+
+            console.log("testing");
+            console.log("PLID", PLID);
+            store.put({
+              id: song.id,
+              name: song.name,
+              artist: song.artist,
+              artistIMG: song.artistIMG,
+              time: song.time,
+              mp3data: song.mp3data,
+              image: song.image,
+              playlistID: PLID + deletePLCount + AddMorePL,
+            });
+            // adds to the next playlist instead of the same if the users hasnt changed screens
+            AddMorePL++;
+          };
+
+          tx.oncomplete = function () {
+            db.close();
           };
         });
 
-        // minusbtn.addEventListener("click", () => {
-        //   console.log("open db on event click");
-        //   let indexedDB =
-        //     window.indexedDB ||
-        //     window.mozIndexedDB ||
-        //     window.webkitIndexedDB ||
-        //     window.msIndexedDB;
-        //   let open = indexedDB.open("SongsDatabase", 1);
+        deletedBTN.addEventListener("click", () => {
+          console.log("open db on event click");
+          let indexedDB =
+            window.indexedDB ||
+            window.mozIndexedDB ||
+            window.webkitIndexedDB ||
+            window.msIndexedDB;
+          let open = indexedDB.open("SongsDatabase", 1);
 
-        //   open.onsuccess = function () {
-        //     let db = open.result;
-        //     let tx = db.transaction("songs", "readwrite");
-        //     let store = tx.objectStore("songs");
-        //     let elementName = document.querySelector(`.song-id-${song.id}`);
-        //     let childNodes = Array.from(ArtistTopTracks.childNodes);
-        //     let index = childNodes.indexOf(elementName);
-        //     console.log(index);
-        //     let removeElementNode = ArtistTopTracks.childNodes[index];
-        //     store.delete(song.id);
+          open.onsuccess = function () {
+            let db = open.result;
+            let tx = db.transaction("songs", "readwrite");
+            let store = tx.objectStore("songs");
+            let elementName = document.querySelector(`.song-id-${song.id}`);
+            let childNodes = Array.from(ArtistTopTracks.childNodes);
+            let index = childNodes.indexOf(elementName);
+            console.log(index);
+            let removeElementNode = ArtistTopTracks.childNodes[index];
+            store.delete(song.id);
 
-        //     console.log(removeElementNode);
-        //     deleteSongsCount++;
+            console.log(removeElementNode);
+            deleteSongsCount++;
 
-        //     songElement = ArtistTopTracks.removeChild(removeElementNode);
+            songElement = ArtistTopTracks.removeChild(removeElementNode);
 
-        //     return songElement;
-        //   };
-        //   tx.oncomplete = function () {
-        //     db.close();
-        //   };
-        // });
+            return songElement;
+          };
+          tx.oncomplete = function () {
+            db.close();
+          };
+        });
 
         songdiv.addEventListener("click", (event) => {
           MPimg.style.display = "block";
@@ -436,7 +532,7 @@ function requestLocal() {
             selectedElements[0].classList.remove("selected");
           }
           // check if tag is one the three, if so add selected class
-          if (["IMG", "DIV", "H5"].includes(event.target.tagName)) {
+          if (["IMG", "DIV", "H5", "I"].includes(event.target.tagName)) {
             songdiv.classList.add("selected");
           }
           let indexedDB =
@@ -555,6 +651,7 @@ function generalLoadSearchAPI(songs) {
       }
     });
     plusbtn.addEventListener("click", () => {
+      alert("Song Added");
       console.log("open db on event click");
       let indexedDB =
         window.indexedDB ||
@@ -685,6 +782,7 @@ function loadSearchSongsFromAPI(songs) {
       }
     });
     plusbtn.addEventListener("click", () => {
+      alert("Song Added");
       console.log("open db on event click");
       let indexedDB =
         window.indexedDB ||
@@ -988,15 +1086,12 @@ backButton.addEventListener("click", () => {
 });
 
 const createNewPlaylist = document.querySelector(".createNewPlaylist");
-let playlistArray = [];
 
 createNewPlaylist.addEventListener("click", openPrompt);
 
 function openPrompt() {
   let playlistName = prompt("Please enter playlist name:", "");
   if (playlistName != null) {
-    playlistArray.push(playlistName);
-
     let indexedDB =
       window.indexedDB ||
       window.mozIndexedDB ||
@@ -1060,15 +1155,13 @@ function loadPlayLists() {
     const IDQuery = store.getAll();
     IDQuery.onsuccess = function () {
       console.log("IDQuery.result", IDQuery.result);
-      ArtistTopTracks.innerHTML = " ";
-      SongsWithName.innerHTML = " ";
 
       DisplayArrayOfPlaylists = IDQuery.result.reverse().map((playlist) => {
         let context = f`<li class="playlist-id-${playlist.id}">
-              <div class= "PLdiv" style="display:flex"> 
+              <div class= "PLdiv" style="display:flex; padding-right:20px"> 
                 <button><i class="ph-playlist"></i>${playlist.name}</button>
                 <div  style="display:flex; width:20px;"> 
-                  <i class="ph-minus" ref="minusbtn" style="width:20px; height:10px; padding-top:15px"></i>
+                  <i class="ph-minus" ref="minusbtn" style="width:20px; height:10px; padding-top:15px; "></i>
                 </div>
               </div>  
             </li>`;
@@ -1076,37 +1169,41 @@ function loadPlayLists() {
         let { minusbtn } = context.collect();
 
         minusbtn.addEventListener("click", () => {
-          console.log("open db on event click");
-          let indexedDB =
-            window.indexedDB ||
-            window.mozIndexedDB ||
-            window.webkitIndexedDB ||
-            window.msIndexedDB;
-          let open = indexedDB.open("SongsDatabase", 1);
+          if (confirm("Delete this playlist?")) {
+            console.log("open db on event click");
+            let indexedDB =
+              window.indexedDB ||
+              window.mozIndexedDB ||
+              window.webkitIndexedDB ||
+              window.msIndexedDB;
+            let open = indexedDB.open("SongsDatabase", 1);
 
-          open.onsuccess = function () {
-            let db = open.result;
-            let tx = db.transaction("playlists", "readwrite");
-            let store = tx.objectStore("playlists");
-            let elementName = document.querySelector(
-              `.playlist-id-${playlist.id}`
-            );
-            let childNodes = Array.from(ShowPlayList.childNodes);
-            let index = childNodes.indexOf(elementName);
-            console.log(index);
-            let removeElementNode = ShowPlayList.childNodes[index];
-            store.delete(playlist.id);
+            open.onsuccess = function () {
+              let db = open.result;
+              let tx = db.transaction("playlists", "readwrite");
+              let store = tx.objectStore("playlists");
+              let elementName = document.querySelector(
+                `.playlist-id-${playlist.id}`
+              );
+              let childNodes = Array.from(ShowPlayList.childNodes);
+              let index = childNodes.indexOf(elementName);
+              console.log(index);
+              let removeElementNode = ShowPlayList.childNodes[index];
+              store.delete(playlist.id);
 
-            console.log(removeElementNode);
-            deletePLCount++;
+              console.log(removeElementNode);
+              deletePLCount++;
 
-            playlistElement = ShowPlayList.removeChild(removeElementNode);
+              playlistElement = ShowPlayList.removeChild(removeElementNode);
 
+              return playlistElement;
+            };
+            tx.oncomplete = function () {
+              db.close();
+            };
+          } else {
             return playlistElement;
-          };
-          tx.oncomplete = function () {
-            db.close();
-          };
+          }
         });
 
         playlistElement = ShowPlayList.appendChild(context);
