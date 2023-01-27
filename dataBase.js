@@ -44,8 +44,6 @@ document.querySelector(".fileInput").addEventListener("change", function () {
   // read mp3 file metadata to collect image and name
   jsmediatags.read(file, {
     onSuccess: function (tag) {
-      console.log("tag:", tag);
-      console.log("tags:", tag.tags);
       // Array buffer to base64
       const data = tag.tags.picture.data;
       const format = tag.tags.picture.format;
@@ -56,26 +54,21 @@ document.querySelector(".fileInput").addEventListener("change", function () {
       PreviewArtistName.innerHTML = songArtist;
       MPArtist.innerHTML = songArtist;
       Submitfile.innerHTML = `Submit: ${songName}`;
-      console.log("songname:", songName);
       let base64String = "";
       for (let i = 0; i < data.length; i++) {
         base64String += String.fromCharCode(data[i]);
       }
       // Output media tags
       songDisplay = `data:${format};base64,${window.btoa(base64String)}`;
-      console.log(songDisplay);
       MPimg.src = songDisplay;
       img.src = songDisplay;
       PreviewSongArt.src = songDisplay;
     },
-    onError: function (error) {
-      console.log(error);
-    },
+    onError: function (error) {},
   });
 });
 
 SubmitFile.addEventListener("click", () => {
-  console.log("open db on event click");
   let indexedDB =
     window.indexedDB ||
     window.mozIndexedDB ||
@@ -103,14 +96,10 @@ SubmitFile.addEventListener("click", () => {
         const cursor = event.target.result;
         if (cursor) {
           // This is the last object in the table
-          console.log("lastid:", lastid);
           lastid = cursor.value.id;
         } // get total aomunt of keys and subtrack from lastest key value to find already deleted tracks
         let deleteSongsLocalCount = deleteSongsCount;
         deleteSongsLocalCount = lastid - countIndex.result;
-        console.log("deleteSongsCount:", deleteSongsLocalCount);
-
-        console.log("countIndex.result + 1:", countIndex.result + 1);
         store.put({
           id: countIndex.result + 1 + deleteSongsLocalCount,
           name: songName,
@@ -125,7 +114,6 @@ SubmitFile.addEventListener("click", () => {
         const audioSong = document.querySelector("audio");
 
         SQuery.onsuccess = function () {
-          console.log("time :", SQuery.result.time);
           audioSong.src = `${SQuery.result.mp3data}`;
         };
       };

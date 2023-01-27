@@ -165,9 +165,7 @@ async function retrieveTopTracksWeek() {
       return response.json();
     })
     .then((data) => {
-      console.log(data);
       songs = data.tracks;
-      console.log(songs);
 
       generalLoadSearchAPI(songs);
     })
@@ -187,9 +185,7 @@ async function retrieveChristmasTracks() {
       return response.json();
     })
     .then((data) => {
-      console.log(data);
       songs = data.tracks;
-      console.log(songs);
 
       generalLoadSearchAPI(songs);
     })
@@ -209,9 +205,7 @@ async function retrieveRapHipHopTracks() {
       return response.json();
     })
     .then((data) => {
-      console.log(data);
       songs = data.tracks;
-      console.log(songs);
 
       generalLoadSearchAPI(songs);
     })
@@ -225,7 +219,6 @@ async function retrieveSongsSearch() {
   let artistName;
   let trackName;
 
-  console.log(inputValue);
   await fetch(
     `https://api.napster.com/v2.2/search?apikey=YTkxZTRhNzAtODdlNy00ZjMzLTg0MWItOTc0NmZmNjU4Yzk4&per_type_limit=10&query=${inputValue}`
   )
@@ -236,13 +229,8 @@ async function retrieveSongsSearch() {
       return response.json();
     })
     .then((data) => {
-      console.log("data object to get artist id: ", data);
-
       artistName = data.search.data.artists[0].id;
-      console.log("artistName console log (id): ", artistName);
-
       trackName = data.search.data.tracks;
-      console.log("trackName: ", trackName);
       loadSearchSongsFromAPI(trackName);
     })
     .catch((error) =>
@@ -259,10 +247,7 @@ async function retrieveSongsSearch() {
       return response.json();
     })
     .then((data) => {
-      console.log("ArtistName data object: ", data);
-
       songs = data.tracks;
-      console.log("ArtistName songs console log: ", songs);
       generalLoadSearchAPI(songs);
     })
     .catch((error) =>
@@ -294,7 +279,6 @@ function requestLocal() {
   document.querySelector(".sub-menu-recent-songs").style.display = "block";
   document.querySelector(".songsWithNameTitle").style.display = "none";
   document.querySelector(".artistTracks").style.display = "none";
-  console.log("open db on event click");
   document.querySelector(".table-title").innerHTML = "Recently Added";
   ShowPlayList.innerHTML = " ";
 
@@ -333,10 +317,7 @@ function requestLocal() {
 
       const DisplayArrayOfSongs = IDQuery.result.reverse().map((song) => {
         let seconds = song.time;
-        console.log(seconds);
         let songElement;
-
-        console.log("song:", song);
 
         let context = f`<div class="song-id-${
           song.id
@@ -405,8 +386,6 @@ function requestLocal() {
 
               let { playlistbtn } = PLcontent.collect();
               playlistbtn.addEventListener("click", (event) => {
-                console.log("open db on event click");
-
                 let indexedDB =
                   window.indexedDB ||
                   window.mozIndexedDB ||
@@ -463,8 +442,6 @@ function requestLocal() {
               deletePLCount = 0;
             }
 
-            console.log("testing");
-            console.log("PLID", PLID);
             store.put({
               id: song.id,
               name: song.name,
@@ -485,7 +462,6 @@ function requestLocal() {
         });
 
         deletedBTN.addEventListener("click", () => {
-          console.log("open db on event click");
           let indexedDB =
             window.indexedDB ||
             window.mozIndexedDB ||
@@ -500,11 +476,8 @@ function requestLocal() {
             let elementName = document.querySelector(`.song-id-${song.id}`);
             let childNodes = Array.from(ArtistTopTracks.childNodes);
             let index = childNodes.indexOf(elementName);
-            console.log(index);
             let removeElementNode = ArtistTopTracks.childNodes[index];
             store.delete(song.id);
-
-            console.log(removeElementNode);
             deleteSongsCount++;
 
             songElement = ArtistTopTracks.removeChild(removeElementNode);
@@ -568,11 +541,7 @@ function requestLocal() {
                 //img.style.backgroundImage = IDQuery.result.image;
               };
 
-              console.log("IDQuery.result.time", IDQuery.result.time);
-
               songID = IDQuery.result.id;
-
-              console.log("songID", songID);
 
               audioSong.src = `${IDQuery.result.mp3data}`;
               PreviewSongArt.src = IDQuery.result.image;
@@ -590,13 +559,10 @@ function requestLocal() {
         });
 
         songElement = ArtistTopTracks.appendChild(context);
-        console.log(ArtistTopTracks.childNodes);
 
         return songElement;
       });
 
-      //img.style.backgroundImage = `${IDQuery.result.image}`;
-      console.log(DisplayArrayOfSongs);
       return DisplayArrayOfSongs;
     };
 
@@ -652,7 +618,6 @@ function generalLoadSearchAPI(songs) {
     });
     plusbtn.addEventListener("click", () => {
       alert("Song Added");
-      console.log("open db on event click");
       let indexedDB =
         window.indexedDB ||
         window.mozIndexedDB ||
@@ -670,15 +635,12 @@ function generalLoadSearchAPI(songs) {
           const request = store.openCursor(null, "prev");
           request.onsuccess = function (event) {
             const cursor = event.target.result;
-            console.log("cursor", cursor);
             if (cursor) {
               // This is the last object in the table
-              console.log("lastid:", lastid);
               lastid = cursor.value.id;
             } else {
               lastid = 0;
             } // get total aomunt of keys and subtrack from lastest key value to find already deleted tracks
-            console.log("songID", songID);
             deleteSongsCount = lastid - songID.result;
 
             store.put({
@@ -741,7 +703,6 @@ function loadSearchSongsFromAPI(songs) {
   SongsWithName.innerHTML = " ";
 
   const DisplayArrayOfSongs = songs.map((song) => {
-    console.log("song: ", song);
     let albumArt = song.albumId;
     let artisrtArt = song.artistId;
     let trackArt = `https://api.napster.com/imageserver/v2/albums/${albumArt}/images/500x500.jpg`;
@@ -783,7 +744,6 @@ function loadSearchSongsFromAPI(songs) {
     });
     plusbtn.addEventListener("click", () => {
       alert("Song Added");
-      console.log("open db on event click");
       let indexedDB =
         window.indexedDB ||
         window.mozIndexedDB ||
@@ -801,16 +761,12 @@ function loadSearchSongsFromAPI(songs) {
             const cursor = event.target.result;
             if (cursor) {
               // This is the last object in the table
-              console.log("lastid:", lastid);
               lastid = cursor.value.id;
             } else {
               lastid = 0;
             } // get total aomunt of keys and subtrack from lastest key value to find already deleted tracks
 
             deleteSongsCount = lastid - songID.result;
-            console.log("deleteSongsCount:", deleteSongsCount);
-
-            console.log("songID.result + 1:", songID.result + 1);
             store.put({
               id: songID.result + 1 + deleteSongsCount,
               name: song.name,
@@ -864,7 +820,6 @@ function loadSearchSongsFromAPI(songs) {
     return songElement;
   });
   if (DisplayArrayOfSongs.length > 0) {
-    console.log("test");
     document.querySelector(".songsWithNameTitle").style.display = "block";
   }
 }
@@ -935,9 +890,7 @@ musicBar.addEventListener("input", function () {
 
   startTime.innerHTML = secondsToMinutes(this.value);
 });
-progressBar.addEventListener("input", function () {
-  console.log("progressBar.value:", progressBar.value);
-});
+progressBar.addEventListener("input", function () {});
 
 function secondsToMinutes(seconds) {
   let minutes = Math.floor(seconds / 60);
@@ -962,8 +915,6 @@ rapHipHopTracks.addEventListener("click", () => {
 });
 
 forwardButton.addEventListener("click", () => {
-  console.log("open db on event click");
-
   let indexedDB =
     window.indexedDB ||
     window.mozIndexedDB ||
@@ -981,15 +932,9 @@ forwardButton.addEventListener("click", () => {
     let keyArray = store.getAllKeys();
 
     keyArray.onsuccess = function () {
-      console.log("keyArray.result[indexCount]", keyArray.result.length);
-      console.log("songID", songID);
-      console.log("songID", songID);
       songID == 0 || songID < keyArray.result.length ? songID++ : null;
-
-      console.log("songID", songID);
       const IDQuery = store.get(keyArray.result[songID - 1]);
       IDQuery.onsuccess = function () {
-        console.log("IDQuery.result:", IDQuery.result);
         const isThereAnArtist = new Image();
 
         isThereAnArtist.src = IDQuery.result.artistIMG;
@@ -1025,7 +970,6 @@ forwardButton.addEventListener("click", () => {
 });
 
 backButton.addEventListener("click", () => {
-  console.log("open db on event click");
   let indexedDB =
     window.indexedDB ||
     window.mozIndexedDB ||
@@ -1043,14 +987,10 @@ backButton.addEventListener("click", () => {
     let keyArray = store.getAllKeys();
 
     keyArray.onsuccess = function () {
-      console.log("keyArray.result.length ", keyArray.result);
-      console.log("indexCount", songID);
-      console.log(songID > 0);
       songID > 1 ? songID-- : null;
 
       const IDQuery = store.get(keyArray.result[songID - 1]);
       IDQuery.onsuccess = function () {
-        console.log("IDQuery.result:", IDQuery.result);
         const isThereAnArtist = new Image();
 
         isThereAnArtist.src = IDQuery.result.artistIMG;
@@ -1110,19 +1050,14 @@ function openPrompt() {
         const request = store.openCursor(null, "prev");
         request.onsuccess = function (event) {
           const cursor = event.target.result;
-          console.log("event.target.result ", event.target.result);
           if (cursor) {
             // This is the last object in the table
-            console.log("lastid:", lastid);
             lastid = cursor.value.id;
           } else {
             lastid = 0;
           } // get total aomunt of keys and subtrack from lastest key value to find already deleted tracks
 
           deletePLCount = lastid - playListID.result;
-          console.log("deletePLCount:", deletePLCount);
-
-          console.log("playListID.result + 1:", playListID.result + 1);
           store.put({
             id: playListID.result + 1 + deletePLCount,
             name: playlistName,
@@ -1154,8 +1089,6 @@ function loadPlayLists() {
     let store = tx.objectStore("playlists");
     const IDQuery = store.getAll();
     IDQuery.onsuccess = function () {
-      console.log("IDQuery.result", IDQuery.result);
-
       DisplayArrayOfPlaylists = IDQuery.result.reverse().map((playlist) => {
         let context = f`<li class="playlist-id-${playlist.id}">
               <div class="PLdiv" ref="PLdiv" style="display:flex; align-items: center; padding-right:20px"> 
@@ -1169,7 +1102,6 @@ function loadPlayLists() {
         minusbtn.addEventListener("click", () => {
           ArtistTopTracks.innerHTML = " ";
           if (confirm("Delete this playlist?")) {
-            console.log("open db on event click");
             let indexedDB =
               window.indexedDB ||
               window.mozIndexedDB ||
@@ -1198,14 +1130,8 @@ function loadPlayLists() {
 
                 if (cursor) {
                   let song = cursor.value;
-                  console.log("cursor", cursor);
-                  console.log("song", cursor.value);
                   // Check the object's property
                   if (song.playlistID === playlist.id) {
-                    console.log(
-                      "found a with playlist list id of",
-                      song.playlistID
-                    );
                     store2.put({
                       id: song.id,
                       name: song.name,
@@ -1222,8 +1148,6 @@ function loadPlayLists() {
               };
 
               store.delete(playlist.id);
-
-              console.log(removeElementNode);
               deletePLCount++;
 
               playlistElement = ShowPlayList.removeChild(removeElementNode);
@@ -1240,7 +1164,6 @@ function loadPlayLists() {
 
         PLdiv.addEventListener("click", () => {
           ArtistTopTracks.innerHTML = " ";
-          console.log("open db on event click");
           let indexedDB =
             window.indexedDB ||
             window.mozIndexedDB ||
@@ -1259,12 +1182,9 @@ function loadPlayLists() {
 
               if (cursor) {
                 let song = cursor.value;
-                console.log("cursor", cursor);
-                console.log("song", cursor.value);
                 // Check the object's property
                 if (song.playlistID === playlist.id) {
                   let seconds = song.time;
-                  console.log(seconds);
                   let songElement;
 
                   let context = f`<div class="song-id-${
@@ -1302,7 +1222,6 @@ function loadPlayLists() {
                       </div>`;
                   let { minusbtn, songdiv } = context.collect();
                   minusbtn.addEventListener("click", () => {
-                    console.log("open db on event click");
                     let indexedDB =
                       window.indexedDB ||
                       window.mozIndexedDB ||
@@ -1327,7 +1246,6 @@ function loadPlayLists() {
                       );
                       let childNodes = Array.from(ArtistTopTracks.childNodes);
                       let index = childNodes.indexOf(elementName);
-                      console.log(index);
                       let removeElementNode = ArtistTopTracks.childNodes[index];
                       store.put({
                         id: song.id,
@@ -1339,7 +1257,6 @@ function loadPlayLists() {
                         image: song.image,
                         playlistID: null,
                       });
-                      console.log(removeElementNode);
                       deleteSongsCount++;
                       songElement =
                         ArtistTopTracks.removeChild(removeElementNode);
@@ -1398,13 +1315,7 @@ function loadPlayLists() {
                           // // call style again to display any user uploaded songs not from url
                           //img.style.backgroundImage = IDQuery.result.image;
                         };
-
-                        console.log("IDQuery.result.time", IDQuery.result.time);
-
                         songID = IDQuery.result.id;
-
-                        console.log("songID", songID);
-
                         audioSong.src = `${IDQuery.result.mp3data}`;
                         PreviewSongArt.src = IDQuery.result.image;
                         PreviewTitle.innerHTML = IDQuery.result.name;
@@ -1419,7 +1330,6 @@ function loadPlayLists() {
                     };
                   });
                   songElement = ArtistTopTracks.appendChild(context);
-                  console.log(ArtistTopTracks.childNodes);
                   cursor.continue();
                   return songElement;
                 } else {
@@ -1437,7 +1347,6 @@ function loadPlayLists() {
         playlistElement = ShowPlayList.appendChild(context);
         return playlistElement;
       });
-      console.log(DisplayArrayOfPlaylists);
       return DisplayArrayOfPlaylists;
     };
     tx.oncomplete = function () {
