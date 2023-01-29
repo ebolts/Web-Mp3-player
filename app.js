@@ -1354,3 +1354,32 @@ function loadPlayLists() {
     };
   };
 }
+
+const modalBtn = document.querySelector(".modalBtn");
+const modalBtn2 = document.querySelector(".modalBtn2");
+const modal = document.querySelector(".modal");
+const modal2 = document.querySelector(".modal2");
+
+modalBtn.addEventListener("click", () => {
+  console.log("dsfsadf");
+  modal.classList.add("showModal");
+  modal2.classList.add("showModal");
+});
+modalBtn2.addEventListener("click", () => {
+  console.log("dsfsadf");
+  modal.classList.remove("showModal");
+  modal2.classList.remove("showModal");
+});
+
+let screenWidth = window.innerWidth;
+
+// window.addEventListener("resize", function () {
+//   if (screenWidth < 500) {
+//     MPimg.src = " ";
+
+//   }
+// });
+
+if (screenWidth < 500) {
+  MPimg.src = " ";
+}

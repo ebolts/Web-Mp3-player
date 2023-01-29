@@ -22,39 +22,57 @@
   <body>
     <div class="grid-container">
       <audio></audio>
-      <div class="mainMenu">
-        <ul class="main-menu-list">
-          <li>
-            <button class="recently-played">
-              <i class="ph-music-notes-plus"></i>Recently Added
-            </button>
-          </li>
-          <li>
-            <button class="playlist">
-              <i class="ph-playlist"></i>Playlists
-            </button>
-          </li>
-          <li>
-            <button class="discover">
-              <i class="ph-music-notes"></i>Discover
-            </button>
-          </li>
-          <li>
-            <button class="search">
-              <i class="ph-magnifying-glass"></i>Search
-            </button>
-          </li>
-          <li>
-            <button class="upload">
-              <i class="ph-upload-simple"></i>Upload
-            </button>
-          </li>
-        </ul>
+      <div class="modal">
+        <div class="mainMenu">
+          <ul class="main-menu-list">
+            <h1 class="modalBtn2">
+              <i class="ph-list"></i>
+            </h1>
+            <li>
+              <button class="recently-played">
+                <i class="ph-music-notes-plus"></i>Recently Added
+              </button>
+            </li>
+            <li>
+              <button class="playlist">
+                <i class="ph-playlist"></i>Playlists
+              </button>
+            </li>
+            <li>
+              <button class="discover">
+                <i class="ph-music-notes"></i>Discover
+              </button>
+            </li>
+            <li>
+              <button class="search">
+                <i class="ph-magnifying-glass"></i>Search
+              </button>
+            </li>
+            <li>
+              <button class="upload">
+                <i class="ph-upload-simple"></i>Upload
+              </button>
+            </li>
+          </ul>
+        </div>
       </div>
       <div class="preview-images">
         <div class="prehalf">
           <div class="song-info">
-            <h1 class="song-info-title" style="color: white"></h1>
+            <div style="display: flex">
+              <h1 class="modalBtn">
+                <i
+                  class="ph-list"
+                  style="
+                    width: 30px;
+                    padding-top: 25px;
+                    padding-right: 20px;
+                    padding-left: 19px;
+                  "
+                ></i>
+              </h1>
+              <h1 class="song-info-title" style="color: white"></h1>
+            </div>
             <h2 class="song-info-artist"></h2>
           </div>
           <div class="preHalfImage">
@@ -65,70 +83,73 @@
           <img src="" alt="" class="testimg" />
         </div>
       </div>
-      <div class="subMenu">
-        <ul class="sub-menu-recent-songs">
-          <h3>Welcome to my web mp3 player!</h3>
-          <p>
-            Here you can search for songs by their name or artist, select from a
-            genre, or upload your own all while saving them to your library or
-            playlists. Songs retrieved online are limited to 30 seconds as this
-            isn’t a proper streaming service, however, songs uploaded directly
-            can be played in full so you can enjoy listening to your favourite
-            tracks all in one place.
-          </p>
-        </ul>
-        <ul class="sub-menu-playlist" style="display: none">
-          <li>
-            <button class="createNewPlaylist">
-              <i class="ph-plus"></i>Create New Playlist
-            </button>
-          </li>
-          <ul class="showPlaylist"></ul>
-        </ul>
-        <ul class="sub-menu-discover">
-          <li>
-            <button class="topTracks">
-              <i class="ph-playlist"></i>Top Tracks Rhapsody
-            </button>
-          </li>
-          <li>
-            <button class="christmasTracks">
-              <i class="ph-playlist"></i>Christmas Tracks
-            </button>
-          </li>
-          <li>
-            <button class="rapHipHopTracks">
-              <i class="ph-playlist"></i>Rap Hip-Hop Tracks
-            </button>
-          </li>
-        </ul>
-        <div class="sub-menu-search">
-          <form id="searchForm">
-            <input
-              type="text"
-              id="textInput"
-              placeholder="Enter Song or Artist Name"
-              value=""
-              required
-            />
+      <div class="modal2">
+        <div class="subMenu">
+          <ul class="sub-menu-recent-songs">
+            <h3>Welcome to my web mp3 player!</h3>
+            <p>
+              Here you can search for songs by their name or artist, select from
+              a genre, or upload your own all while saving them to your library
+              or playlists. Songs retrieved online are limited to 30 seconds as
+              this isn’t a proper streaming service, however, songs uploaded
+              directly can be played in full so you can enjoy listening to your
+              favourite tracks all in one place.
+            </p>
+          </ul>
+          <ul class="sub-menu-playlist" style="display: none">
             <li>
-              <button type="submit" class="searchBtn">
-                <i class="ph-magnifying-glass"></i>Search
+              <button class="createNewPlaylist">
+                <i class="ph-plus"></i>Create New Playlist
               </button>
             </li>
-          </form>
-        </div>
-        <div class="sub-menu-upload">
-          <input type="file" id="file" class="fileInput" accept=".mp3" />
+            <ul class="showPlaylist"></ul>
+          </ul>
+          <ul class="sub-menu-discover">
+            <li>
+              <button class="topTracks">
+                <i class="ph-playlist"></i>Top Tracks Rhapsody
+              </button>
+            </li>
+            <li>
+              <button class="christmasTracks">
+                <i class="ph-playlist"></i>Christmas Tracks
+              </button>
+            </li>
+            <li>
+              <button class="rapHipHopTracks">
+                <i class="ph-playlist"></i>Rap Hip-Hop Tracks
+              </button>
+            </li>
+          </ul>
+          <div class="sub-menu-search">
+            <form id="searchForm">
+              <input
+                type="text"
+                id="textInput"
+                placeholder="Enter Song or Artist Name"
+                value=""
+                required
+              />
+              <li>
+                <button type="submit" class="searchBtn">
+                  <i class="ph-magnifying-glass"></i>Search
+                </button>
+              </li>
+            </form>
+          </div>
+          <div class="sub-menu-upload">
+            <input type="file" id="file" class="fileInput" accept=".mp3" />
 
-          <label for="file"><i class="ph-folder"></i>Choose a file...</label>
-          <li>
-            <button type="submit" class="Submitfile">
-              <i class="ph-upload-simple"></i>Submit
-            </button>
-          </li>
+            <label for="file"><i class="ph-folder"></i>Choose a file...</label>
+            <li>
+              <button type="submit" class="Submitfile">
+                <i class="ph-upload-simple"></i>Submit
+              </button>
+            </li>
+          </div>
         </div>
       </div>
+
       <div class="listMenu">
         <div class="list-menu-item">
           <div class="table-header">
@@ -157,7 +178,7 @@
       </div>
     </div>
     <div class="media-player">
-      <img src="" alt="" class="song-box-img" style="display: none" />
+      <img src="" alt="" class="song-box-img" />
       <div class="song-info-small">
         <h6 class="MP-name"></h6>
         <h6 class="MP-artist"></h6>
