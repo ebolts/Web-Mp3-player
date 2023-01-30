@@ -346,7 +346,7 @@ function requestLocal() {
               <div class="dropDownDiv" style="text-align: left; width:200px; height:30px "> 
                 <i class="ph-dots-three-vertical" ref="dropDown" style="width:15px"></i>
                 
-                <div class="options" style=" z-index:10; position: absolute;" ref="dropDownContent">
+                <div class="options" style=" z-index:10; position: absolute; margin-left: -80px;" ref="dropDownContent">
                     <button ref="deletedBTN"> <i class="ph-minus" style="width:25px; height:10px; padding-top: 4px"></i>Remove from library</button>
                     <button ref="newPL"> <i class="ph-list-plus" style="width:25px; padding-top: 4px"></i> Create new playlist</button>
                     <label class="optionLabel">Add to playlist</label>
@@ -1361,25 +1361,12 @@ const modal = document.querySelector(".modal");
 const modal2 = document.querySelector(".modal2");
 
 modalBtn.addEventListener("click", () => {
-  console.log("dsfsadf");
   modal.classList.add("showModal");
   modal2.classList.add("showModal");
+  modalBtn.style.visibility = "hidden";
 });
 modalBtn2.addEventListener("click", () => {
-  console.log("dsfsadf");
   modal.classList.remove("showModal");
   modal2.classList.remove("showModal");
+  modalBtn.style.visibility = "visible";
 });
-
-let screenWidth = window.innerWidth;
-
-// window.addEventListener("resize", function () {
-//   if (screenWidth < 500) {
-//     MPimg.src = " ";
-
-//   }
-// });
-
-if (screenWidth < 500) {
-  MPimg.src = " ";
-}
