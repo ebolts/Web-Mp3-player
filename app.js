@@ -330,11 +330,11 @@ function requestLocal() {
               } style="height: auto; width:100%;" >
             </div>
               <div style="text-align: left; width:200px; "> 
-                <h5 class="card-title " >${song.name}</h5>
+                <h5 class="card-title"style="margin:0px" >${song.name}</h5>
               </div>
       
               <div style="text-align: left; width:200px; "> 
-                <h5 class="card-title " >${song.artist}</h5>
+                <h5 class="card-title" style="margin:0px" >${song.artist}</h5>
               </div>
       
               <div style="text-align: left; width:200px; "> 
@@ -592,11 +592,11 @@ function generalLoadSearchAPI(songs) {
           <img class="image" src=${trackArt} style="height: auto; width:100%; " >
         </div>
         
-        <div style="text-align: left; width:200px; "> 
-          <h5 class="card-title " >${song.name}</h5>
+        <div style="text-align: left; width:200px; height:auto; "> 
+          <h5 class="card-title" style="margin:0px">${song.name}</h5>
         </div>
-        <div style="text-align: left; width:200px; "> 
-          <h5 class="card-title " >${song.artistName}</h5>
+        <div style="text-align: left; width:200px; height:auto; "> 
+          <h5 class="card-title" style="margin:0px">${song.artistName}</h5>
         </div>
         <div style="text-align: left; width:200px; "> 
           <h5 class="card-title" >${secondsToMinutes(seconds)}</h5>
@@ -720,10 +720,10 @@ function loadSearchSongsFromAPI(songs) {
         </div>
         
         <div style="text-align: left; width:200px; "> 
-          <h5 class="card-title " >${song.name}</h5>
+          <h5 class="card-title"style="margin:0px" >${song.name}</h5>
         </div>
         <div style="text-align: left; width:200px; "> 
-          <h5 class="card-title " >${song.artistName}</h5>
+          <h5 class="card-title"style="margin:0px" >${song.artistName}</h5>
         </div>
         <div style="text-align: left; width:200px; "> 
           <h5 class="card-title" >${secondsToMinutes(seconds)}</h5>
@@ -1203,11 +1203,15 @@ function loadPlayLists() {
                         </div>
                         
                         <div style="text-align: left; width:200px; padding-right: 10px"> 
-                          <h5 class="card-title " >${song.name}</h5>
+                          <h5 class="card-title"style="margin:0px" >${
+                            song.name
+                          }</h5>
                         </div>
                 
                         <div style="text-align: left; width:200px; padding-right: 10px"> 
-                          <h5 class="card-title " >${song.artist}</h5>
+                          <h5 class="card-title"style="margin:0px" >${
+                            song.artist
+                          }</h5>
                         </div>
                 
                         <div style="text-align: left; width:200px; padding-right: 10px"> 
