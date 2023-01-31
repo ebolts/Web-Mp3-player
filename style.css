@@ -597,7 +597,6 @@ button:hover {
 }
 
 @media only screen and (max-width: 1200px) {
-  .modalBtn,
   .modalBtn2 {
     display: block;
   }
@@ -647,7 +646,7 @@ button:hover {
     display: grid;
     grid-auto-flow: column;
     grid-template-columns: 2fr;
-    grid-template-rows: 0.6fr 2fr;
+
     gap: 0px 0px;
     grid-template-areas:
       "."
@@ -658,12 +657,46 @@ button:hover {
 .showModal {
   display: flex;
 }
+.testimg {
+  display: none;
+}
+.artistTopTracks > div > div {
+  padding-left: 20px;
+  max-width: 152px;
+}
+.artistTopTracks > div {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
 
 /* mobile view */
 @media only screen and (max-width: 600px) {
+  .grid-container {
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-columns: 2fr;
+
+    gap: 0px 0px;
+    grid-template-areas:
+      "."
+      ".";
+  }
+  .artistTopTracks > div > div {
+    padding-left: 10px;
+  }
+  .artistTopTracks > div {
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
+  .table-title {
+    padding-left: 10px;
+  }
   .preHalfImage {
     max-height: 200px;
     max-width: 200px;
+  }
+  .preview-song-art {
+    display: none;
   }
   .modal2 {
     margin-top: 452px;

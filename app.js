@@ -322,14 +322,12 @@ function requestLocal() {
         let context = f`<div class="song-id-${
           song.id
         }" ref="songdiv" style="display: flex; text-align: left; align-items:center; justify-content: space-between; max-height: 152px; 
-          margin: 15px 0px 15px 0px; 
+          
             " > 
-            <div style="display: flex; align-items: left; justify-content: left;  width:200px; max-height: 152px; height: 100%;padding-left: 20px; "> 
+            <div style="display: flex; justify-content: left;  width:185px; max-height: 152px; height: 100%; padding-right: 10px;"> 
               <img class="image" src=${
                 song.image
-              } style=" width: 50%; height: auto;  object-fit: cover;  background-size: cover; background-image:${
-          song.image
-        }" >
+              } style="height: auto; width:100%;" >
             </div>
               <div style="text-align: left; width:200px; "> 
                 <h5 class="card-title " >${song.name}</h5>
@@ -346,7 +344,7 @@ function requestLocal() {
               <div class="dropDownDiv" style="text-align: left; width:200px; height:30px "> 
                 <i class="ph-dots-three-vertical" ref="dropDown" style="width:15px"></i>
                 
-                <div class="options" style=" z-index:10; position: absolute; margin-left: -80px;" ref="dropDownContent">
+                <div class="options" style=" z-index:20; position: absolute; margin-left: -80px;" ref="dropDownContent">
                     <button ref="deletedBTN"> <i class="ph-minus" style="width:25px; height:10px; padding-top: 4px"></i>Remove from library</button>
                     <button ref="newPL"> <i class="ph-list-plus" style="width:25px; padding-top: 4px"></i> Create new playlist</button>
                     <label class="optionLabel">Add to playlist</label>
@@ -491,6 +489,8 @@ function requestLocal() {
 
         songdiv.addEventListener("click", (event) => {
           MPimg.style.display = "block";
+          modalBtn.style.display = "block";
+          img.style.display = "block";
           playButton.querySelector("i").classList.remove("ph-pause");
           playButton.querySelector("i").classList.add("ph-play");
           playButton.classList.remove("selectedBtn");
@@ -586,10 +586,10 @@ function generalLoadSearchAPI(songs) {
     let context = f`<div class="song-id-${
       song.id
     }" ref="songdiv" style="display: flex; text-align: left; align-items:center; justify-content: space-between; max-height: 152px; 
-      margin: 15px 0px 15px 0px; 
+      
         " > 
-        <div style="display: flex; align-items: left; justify-content: left;  width:200px; max-height: 152px; height: 100%; padding-left: 20px; "> 
-          <img class="image" src=${trackArt} style=" width: 50%; height: auto;" >
+        <div style="display: flex; justify-content: left;  width:185px; max-height: 152px; height: 100%; padding-right: 10px;"> 
+          <img class="image" src=${trackArt} style="height: auto; width:100%; " >
         </div>
         
         <div style="text-align: left; width:200px; "> 
@@ -662,6 +662,7 @@ function generalLoadSearchAPI(songs) {
 
     songdiv.addEventListener("click", () => {
       MPimg.style.display = "block";
+      img.style.display = "block";
       playButton.querySelector("i").classList.remove("ph-pause");
       playButton.querySelector("i").classList.add("ph-play");
       playButton.classList.remove("selectedBtn");
@@ -712,10 +713,10 @@ function loadSearchSongsFromAPI(songs) {
     let context = f`<div class="song-id-${
       song.id
     }" ref="songdiv" style="display: flex; text-align: left; align-items:center; justify-content: space-between; max-height: 152px; 
-      margin: 15px 0px 15px 0px; 
+      
         " > 
-        <div style="display: flex; align-items: left; justify-content: left;  width:200px; max-height: 152px; height: 100%;padding-left: 20px;"> 
-          <img class="image" src=${trackArt} style=" width: 50%; height: auto;" >
+        <div style="display: flex; justify-content: left;  width:185px; max-height: 152px; height: 100%; padding-right: 10px;"> 
+          <img class="image" src=${trackArt} style="height: auto; width:100%; " >
         </div>
         
         <div style="text-align: left; width:200px; "> 
@@ -786,6 +787,7 @@ function loadSearchSongsFromAPI(songs) {
 
     songdiv.addEventListener("click", () => {
       MPimg.style.display = "block";
+      img.style.display = "block";
       playButton.querySelector("i").classList.remove("ph-pause");
       playButton.querySelector("i").classList.add("ph-play");
       playButton.classList.remove("selectedBtn");
@@ -1190,12 +1192,12 @@ function loadPlayLists() {
                   let context = f`<div class="song-id-${
                     song.id
                   }" ref="songdiv" style="display: flex; text-align: left; align-items:center; justify-content: space-between; max-height: 152px; 
-                      margin: 15px 0px 15px 0px; 
+                      
                         " > 
-                        <div style="display: flex; align-items: left; justify-content: left;  width:200px; max-height: 152px; height: 100%;padding-left: 20px; "> 
+                        <div style="display: flex; justify-content: left;  width:185px; max-height: 152px; height: 100%; padding-right: 10px;"> 
                           <img class="image" src=${
                             song.image
-                          } style=" width: 50%; height: auto;  object-fit: cover;  background-size: cover; background-image:${
+                          } style="height: auto; width:100%; object-fit: cover;  background-size: cover; background-image:${
                     song.image
                   }" >
                         </div>
@@ -1267,6 +1269,8 @@ function loadPlayLists() {
                     };
                   });
                   songdiv.addEventListener("click", (event) => {
+                    img.style.display = "block";
+                    MPimg.style.display = "block";
                     // Get all elements with the "selected" class
                     const selectedElements =
                       ArtistTopTracks.querySelectorAll(".selected");
